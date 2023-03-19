@@ -10,9 +10,9 @@
     "prettier": "npx prettier --write ./src/**/*.*",
     "prebuild": "yarn clean",
     "build": "tsc --p ./tsconfig.json",
-    "prestart": "yarn --only=prod",
     "start": "cross-env NODE_ENV=\"production\" node build/index.js",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "Hoang Cong Phan",

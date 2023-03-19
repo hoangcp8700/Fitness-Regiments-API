@@ -3,7 +3,7 @@ import { Model, Schema, model, Document } from "mongoose";
 import { IUser } from "@interfaces/userType";
 import { RoleType } from "@constants/enum";
 import timezone from "@/utils/formatTime";
-import { comparePasswordFC, hashPasswordFC } from "@/utils/functions";
+import { hashPasswordFC } from "@/utils/functions";
 
 // declare methods
 export interface IUserDocument extends IUser, Document {
@@ -74,14 +74,6 @@ schema.pre<IUser>("save", function (next) {
   }
   next();
 });
-
-schema.methods.comparePassword = function (password: string): boolean {
-  return comparePasswordFC(this.password, password);
-};
-
-schema.methods.hashPassword = function (password: string): string {
-  return hashPasswordFC(password);
-};
 
 schema.methods.hiddenPassword = function (): IUser {
   const obj = this.toObject(); // or var obj = this;

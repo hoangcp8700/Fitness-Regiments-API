@@ -14,8 +14,8 @@ declare global {
       userID?: string;
       // category?: ICategoryDocument | any;
       // subCategory?: ISubCategoryDocument | any;
-      userInfo?: User | any;
-      user?: User | undefined;
+      // userInfo?: User | any;
+      // user?: User | undefined;
       // shop?: IShopDocument | undefined;
       isAdmin?: boolean;
     }
