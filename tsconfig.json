@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["esnext", "dom", "dom.iterable"],
+
+    "allowJs": true /* Allow javascript files to be compiled. */,
+    "checkJs": true /* Report errors in .js files. */,
+    "outDir": "build/",
+    "sourceMap": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,
+    "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
+    "noUnusedLocals": true /* Report errors on unused locals. */,
+    "noUnusedParameters": true /* Report errors on unused parameters. */,
+    "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
+    "forceConsistentCasingInFileNames": false,
+    "baseUrl": "./",
+    "paths": {
+      "@*": ["src/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      }
+    ]
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.d.ts"],
+  "exclude": ["./node_modules", "./build"]
+}
