@@ -3,7 +3,7 @@ import { Model, Schema, model, Document } from "mongoose";
 import timezone from "@/utils/formatTime";
 import { comparePasswordFC, hashPasswordFC } from "@/utils/functions";
 import { IUser } from "@interfaces/userType";
-import { RoleType } from "@interfaces/roleType";
+import { RoleType } from "@constants/enum";
 
 // declare methods
 export interface IUserDocument extends IUser, Document {

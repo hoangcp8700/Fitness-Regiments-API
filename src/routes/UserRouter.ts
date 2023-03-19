@@ -1,6 +1,6 @@
 import express from "express";
 
-import authMiddleware from "@/middleware/authMiddleware";
+import authMiddleware from "@middleware/auth";
 
 import controller from "@/controllers/UserController";
 

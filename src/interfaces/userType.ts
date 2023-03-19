@@ -1,4 +1,4 @@
-import { RoleType } from "./roleType";
+import { RoleType } from "@constants/enum";
 
 export type IUser = {
   userName: string;
