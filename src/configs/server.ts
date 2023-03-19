@@ -14,7 +14,6 @@ const createServer = (): express.Application => {
   app.use(express.urlencoded({ extended: true, limit: "30mb" }));
   app.use(cors(CONFIG.corsOptions));
   app.use(express.json());
-  console.log("123");
   // app.use(passport.initialize()); // init passport on every route call
   // app.use(passport.session()); // allow passport to use "express-session"
 

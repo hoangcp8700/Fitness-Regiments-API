@@ -30,7 +30,7 @@ const JWT_OPTIONS = {
   refresh: "1y",
 };
 
-const MONGOOSE_OPTIONS = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.kftl9qs.mongodb.net/?retryWrites=true&w=majority`;
+const MONGOOSE_OPTIONS = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.zkxzpff.mongodb.net/?retryWrites=true&w=majority`;
 
 const SMTP_INITIALIZE_OPTIONS = {
   host: process.env.SMTP_HOST,

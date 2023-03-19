@@ -5,14 +5,16 @@ import { CONFIG } from "@configs";
 import { AppError } from "@exceptions/AppError";
 import MESSAGES from "@constants/messages";
 import { HttpCode } from "@constants/enum";
-import { createServer } from "@/configs/server";
+import { createServer, libConfig } from "@/configs/server";
+import connectDB from "@configs/connectDB";
 
-const { host } = CONFIG;
-const { port } = CONFIG;
+const { host, port } = CONFIG;
 
 const startServer = async () => {
   try {
     const app = await createServer();
+    await connectDB().then(() => libConfig());
+
     const server = http.createServer(app).listen({ host, port }, () => {
       const addressInfo = server.address() as AddressInfo;
       console.log(`Server ready at http://${addressInfo.address}:${addressInfo.port}`);

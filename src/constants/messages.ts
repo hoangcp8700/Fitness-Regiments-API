@@ -11,6 +11,7 @@ const MESSAGES = {
   NO_TOKEN_PROVIDE: "No token provided",
   UNAUTHORIZED: "Unauthorized",
   ACCOUNT_EXIST: "Email or Username already exists",
+  CONNECT_DB_ERROR: "Connect to database error",
 };
 
 export default MESSAGES;
