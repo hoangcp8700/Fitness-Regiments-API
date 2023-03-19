@@ -1,9 +1,9 @@
 import { Model, Schema, model, Document } from "mongoose";
 
-import timezone from "@/utils/formatTime";
-import { comparePasswordFC, hashPasswordFC } from "@/utils/functions";
 import { IUser } from "@interfaces/userType";
 import { RoleType } from "@constants/enum";
+import timezone from "@/utils/formatTime";
+import { comparePasswordFC, hashPasswordFC } from "@/utils/functions";
 
 // declare methods
 export interface IUserDocument extends IUser, Document {

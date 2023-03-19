@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 
 // import { paginationPipeLine } from "@/utils/functions";
 import MESSAGES from "@/constants/messages";
-
 import User from "@/models/UserModel";
 // import { IUser } from "@interfaces/userType";
 
@@ -44,9 +43,9 @@ const GET_DETAIL_CONTROLLER = async (req: Request, res: Response) => {
   }
 };
 
-const UPDATE_CONTROLLER = async (req: Request, res: Response) => {
+const UPDATE_CONTROLLER = async (_req: Request, res: Response) => {
   try {
-    const { userID } = req;
+    // const { userID } = req;
     // User.findByIdAndUpdate(userID, { $set: req.body }, { new: true }, (err: any, result: IUser) => {
     //   if (err) {
     //     return res.status(404).json({

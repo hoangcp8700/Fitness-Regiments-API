@@ -2,10 +2,12 @@ import mongoose from "mongoose";
 import { NextFunction, Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
 
+import { IUser } from "@interfaces/userType";
 import parseToken from "@/utils/jwt";
 import User from "@/models/UserModel";
 import MESSAGES from "@/constants/messages";
-import { IUser } from "@interfaces/userType";
+import { AppError } from "@exceptions/AppError";
+import { HttpCode } from "@constants/enum";
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -93,16 +95,18 @@ const loginAuthentication = async (req: Request, res: Response, next: NextFuncti
     const user = User.findOne({ email: userNameRegex, userName: userNameRegex });
 
     if (!user) {
-      return res.status(404).json({
-        message: MESSAGES.USER_NOT_EXIST,
+      throw new AppError({
+        httpCode: HttpCode.NOT_FOUND,
+        description: MESSAGES.USER_NOT_EXIST,
       });
     }
     const newUser = new User(user);
     const checkPassword = newUser.comparePassword(password);
 
     if (!checkPassword) {
-      return res.status(404).send({
-        message: MESSAGES.PASSWORD_INVALID,
+      throw new AppError({
+        httpCode: HttpCode.NOT_FOUND,
+        description: MESSAGES.PASSWORD_INVALID,
       });
     }
 
@@ -134,6 +138,7 @@ const loginAuthentication = async (req: Request, res: Response, next: NextFuncti
     //     return next();
     //   },
     // );
+    next();
   } catch (error) {
     res.status(401).json({
       message: "Unauthorized",

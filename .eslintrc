@@ -12,8 +12,8 @@
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "ignorePatterns": ["dist"],
-  "plugins": ["jsx-a11y", "import", "prettier", "@typescript-eslint"],
+  "ignorePatterns": ["build"],
+  "plugins": ["react", "react-hooks", "jsx-a11y", "import", "prettier", "@typescript-eslint"],
   "env": {
     "node": true,
     "browser": true,
@@ -25,6 +25,9 @@
       "@typescript-eslint/parser": [".js", ".ts"]
     },
     "import/resolver": {
+      "typescript": {
+        "directory": "./tsconfig.json"
+      },
       "node": {
         "extensions": [".js", ".ts"]
       }
@@ -48,10 +51,11 @@
         "import/prefer-default-export": "off",
         "@typescript-eslint/no-use-before-define": "error",
         "@typescript-eslint/no-unused-vars": "error",
-        "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-empty-interface": "off",
         "jsx-a11y/no-noninteractive-element-interactions": "off",
+        "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/indent": "off",
+        "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/quotes": [
           "error",
           "double",

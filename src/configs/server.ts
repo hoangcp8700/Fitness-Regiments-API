@@ -2,18 +2,19 @@ import express, { Application } from "express";
 import cors from "cors";
 // import passport from "passport";
 
+import { AppError } from "@exceptions/AppError";
+import MESSAGES from "@constants/messages";
+import { HttpCode } from "@constants/enum";
 import passportConnect from "@/configs/passport";
 import routes from "@/routes";
 import { CONFIG } from "@/configs";
-import { AppError, HttpCode } from "@services/AppError";
-import MESSAGES from "@constants/messages";
 
 const createServer = (): express.Application => {
   const app: Application = express();
   app.use(express.urlencoded({ extended: true, limit: "30mb" }));
   app.use(cors(CONFIG.corsOptions));
   app.use(express.json());
-
+  console.log("123");
   // app.use(passport.initialize()); // init passport on every route call
   // app.use(passport.session()); // allow passport to use "express-session"
 

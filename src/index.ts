@@ -1,12 +1,14 @@
-import { createServer } from "./server";
-import { CONFIG } from "@configs";
 import http from "http";
 import { AddressInfo } from "net";
-import { AppError, HttpCode } from "@services/AppError";
-import MESSAGES from "@constants/messages";
 
-const host = CONFIG.host;
-const port = CONFIG.port;
+import { CONFIG } from "@configs";
+import { AppError } from "@exceptions/AppError";
+import MESSAGES from "@constants/messages";
+import { HttpCode } from "@constants/enum";
+import { createServer } from "@/configs/server";
+
+const { host } = CONFIG;
+const { port } = CONFIG;
 
 const startServer = async () => {
   try {
