@@ -1,13 +1,13 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response } from "express";
 import cors from "cors";
 // import passport from "passport";
 
-import { AppError } from "@exceptions/AppError";
-import MESSAGES from "@constants/messages";
 import { HttpCode } from "@constants/enum";
 import passportConnect from "@/configs/passport";
 import routes from "@/routes";
 import { CONFIG } from "@/configs";
+import MESSAGES from "@constants/messages";
+import errorHandler from "@exceptions/ErrorHandler";
 
 const createServer = (): express.Application => {
   const app: Application = express();
@@ -22,12 +22,11 @@ const createServer = (): express.Application => {
   // app.use(routesOauth); // passport
 
   app.get("/", (_req, res) => res.send("Welcome to monozon ecommerce"));
-  app.all("*", () => {
-    throw new AppError({
-      httpCode: HttpCode.NOT_FOUND,
-      description: MESSAGES.ROUTER_NOT_EXIST,
-    });
+
+  app.all("*", (req: Request, res: Response) => {
+    errorHandler(HttpCode.NOT_FOUND, MESSAGES.ROUTER_NOT_EXIST)(req, res);
   });
+
   return app;
 };
 

@@ -70,6 +70,8 @@
   "rules": {
     "prettier/prettier": "error",
     "camelcase": "error",
+    "consistent-return": "warn",
+    "arrow-body-style": 0,
     "quotes": [2, "double", { "avoidEscape": true }],
     "import/extensions": [
       "error",

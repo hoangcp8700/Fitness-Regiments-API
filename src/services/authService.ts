@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { HydratedDocument } from "mongoose";
 
 import { HttpCode } from "@constants/enum";
@@ -7,8 +7,10 @@ import MESSAGES from "@constants/messages";
 import User from "@models/UserModel";
 import { comparePasswordFC } from "@utils/functions";
 import { IUser } from "@interfaces/userType";
+import errorHandler from "@exceptions/ErrorHandler";
+import responseHandler from "@exceptions/ResponseHandler";
 
-export const login = async (req: Request, _res: Response, next: NextFunction) => {
+const login = async (req: Request) => {
   try {
     const { userName, password } = req.body;
     const userNameRegex = userName.trim();
@@ -31,7 +33,7 @@ export const login = async (req: Request, _res: Response, next: NextFunction) =>
       });
     }
 
-    next();
+    return user;
   } catch (error) {
     throw new AppError({
       httpCode: HttpCode.UNAUTHORIZED,
@@ -40,7 +42,7 @@ export const login = async (req: Request, _res: Response, next: NextFunction) =>
   }
 };
 
-export const register = async (req: Request, res: Response) => {
+const register = async (req: Request, res: Response) => {
   try {
     const { body } = req;
     body.email = body.email.trim();
@@ -51,23 +53,20 @@ export const register = async (req: Request, res: Response) => {
     });
 
     if (findByUser) {
-      throw new AppError({
-        httpCode: HttpCode.BAD_REQUEST,
-        description: MESSAGES.ACCOUNT_EXIST,
-      });
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.ACCOUNT_EXIST, true)(req, res);
     }
 
     const newUser: HydratedDocument<IUser> = new User(body);
 
     await newUser.save();
 
-    res.status(HttpCode.OK).json({
-      message: MESSAGES.REGISTER_SUCCESS,
-    });
-  } catch (error) {
-    throw new AppError({
-      httpCode: HttpCode.INTERNAL_SERVER_ERROR,
-      description: MESSAGES.SERVER_ERROR,
-    });
+    return responseHandler(200, MESSAGES.REGISTER_SUCCESS, newUser, true)(req, res);
+  } catch (error: any) {
+    return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
   }
+};
+
+export default {
+  login,
+  register,
 };

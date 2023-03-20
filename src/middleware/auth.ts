@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
 
 import parseToken from "@/utils/jwt";
-import User from "@/models/UserModel";
 import MESSAGES from "@/constants/messages";
 import { AppError } from "@exceptions/AppError";
 import { HttpCode } from "@constants/enum";
@@ -14,7 +13,7 @@ const verifyToken = async (req: Request, _res: Response, next: NextFunction) => 
       const token = headerAuthorization.split(" ")[1];
       const decoded = parseToken(token) as JwtPayload;
       req.userID = decoded.id;
-      return next();
+      next();
     }
     throw new AppError({
       httpCode: HttpCode.NO_TOKEN,
@@ -28,18 +27,18 @@ const verifyToken = async (req: Request, _res: Response, next: NextFunction) => 
   }
 };
 
-const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const result = await User.findOne({ _id: req.userID, role: "admin" }).exec();
-    req.isAdmin = Boolean(result);
-    next();
-  } catch (error) {
-    res.status(401).json({
-      message: "Unauthorized",
-      error,
-    });
-  }
-};
+// const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const result = await User.findOne({ _id: req.userID, role: "admin" }).exec();
+//     req.isAdmin = Boolean(result);
+//     next();
+//   } catch (error) {
+//     res.status(401).json({
+//       message: "Unauthorized",
+//       error,
+//     });
+//   }
+// };
 
 // const checkUserExistByID = async (req: Request, res: Response, next: NextFunction) => {
 //   try {
@@ -71,28 +70,28 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
 //   }
 // };
 
-const roleAccess = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const user = await User.findById(req?.userID).exec();
+// const roleAccess = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const user = await User.findById(req?.userID).exec();
 
-    if (!user?.isVerify && user?.role !== "admin") {
-      return res.status(401).json({
-        message: MESSAGES.VERIFY_ERROR,
-      });
-    }
-    return next();
-  } catch (error) {
-    return res.status(401).json({
-      message: MESSAGES.VERIFY_ERROR,
-      error,
-    });
-  }
-};
+//     if (!user?.isVerify && user?.role !== "admin") {
+//       return res.status(401).json({
+//         message: MESSAGES.VERIFY_ERROR,
+//       });
+//     }
+//     return next();
+//   } catch (error) {
+//     return res.status(401).json({
+//       message: MESSAGES.VERIFY_ERROR,
+//       error,
+//     });
+//   }
+// };
 
 export default {
   verifyToken,
   // verifyTokenNoRequired,
   // checkUserExistByID,
-  roleAccess,
-  isAdmin,
+  // roleAccess,
+  // isAdmin,
 };

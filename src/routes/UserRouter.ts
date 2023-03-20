@@ -1,15 +1,16 @@
 import express from "express";
 
-import authMiddleware from "@middleware/auth";
+// import authMiddleware from "@middleware/auth";
 import controller from "@/controllers/UserController";
 
 const router = express.Router();
 
-router.get("/users/:id", [authMiddleware.checkUserExistByID], controller.GET_DETAIL_CONTROLLER);
-router.delete(
-  "/users/:id",
-  [authMiddleware.verifyToken, authMiddleware.roleAccess],
-  controller.DELETE_CONTROLLER,
-);
+router.get("/", controller.GET_LIST_USER_CONTROLLER);
+// router.get("/users/:id", controller.GET_DETAIL_CONTROLLER);
+// router.delete(
+//   "/:id",
+//   [authMiddleware.verifyToken, authMiddleware.roleAccess],
+//   controller.DELETE_CONTROLLER,
+// );
 
 export default router;

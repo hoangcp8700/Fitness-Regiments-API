@@ -28,18 +28,14 @@ const schema: Schema = new Schema<IUser>(
   {
     email: {
       type: String,
-      trim: true,
-      lowercase: true,
       unique: true,
     },
     userName: {
       type: String,
-      trim: true,
       lowercase: true,
     },
     password: {
       type: String,
-      trim: true,
       select: false,
     },
     nickName: String,

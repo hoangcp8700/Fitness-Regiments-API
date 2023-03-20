@@ -4,6 +4,7 @@ const MESSAGES = {
   REGISTER_SUCCESS: "Register account success",
   UPDATE_USER_SUCCESS: "Update user successful",
   DELETE_USER_SUCCESS: "Delete user successful",
+  LOGIN_SUCCESS: "Login successful",
   VERIFY_ERROR: "Inactive account or unauthorized",
   PASSWORD_INVALID: "Password invalid, please try again",
   SERVER_ERROR: "Something went wrong with the server",
