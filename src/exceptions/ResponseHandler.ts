@@ -1,23 +1,28 @@
 import { Request, Response } from "express";
 
+import { logger } from "@configs/logging";
+
 const responseHandler =
-  (statusCode: number, successMsg?: string, successData?: any, isJson?: boolean) =>
+  (httpCode: number, msg?: string, successData?: any, isJson?: boolean) =>
   (_req: Request, res: Response) => {
-    return isJson
-      ? {
-          httpCode: statusCode,
-          isSuccess: true,
-          ...(successMsg && { message: successMsg }),
-          ...(successData && { data: successData }),
-        }
-      : res.status(statusCode).json({
-          httpCode: statusCode,
-          isSuccess: true,
-          ...(successMsg && { message: successMsg }),
-          ...(successData && { data: successData }),
-        });
+    if (isJson) {
+      return {
+        httpCode,
+        isSuccess: true,
+        ...(msg && { message: msg }),
+        ...(successData && { data: successData }),
+      };
+    }
+    logger.info(`${httpCode}: ${msg}`);
+
+    return res.status(httpCode).json({
+      httpCode,
+      isSuccess: true,
+      ...(msg && { message: msg }),
+      ...(successData && { data: successData }),
+    });
   };
 
 export default responseHandler;
 
-//  responseHandler(HttpCode.BAD_REQUEST, MESSAGES.ACCOUNT_EXIST, data)(req, res);
+// responseHandler(response.httpCode, response.message, response.data)(req, res);
