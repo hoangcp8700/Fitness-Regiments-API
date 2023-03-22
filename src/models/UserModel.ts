@@ -1,20 +1,20 @@
 import { Model, Schema, model, Document } from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 import { IUser } from "@interfaces/userType";
 import { RoleType } from "@constants/enum";
 import timezone from "@/utils/formatTime";
 import { hashPasswordFC } from "@/utils/functions";
+import { IPaginateModel } from "@interfaces/paginate";
 
 // declare methods
 export interface IUserDocument extends IUser, Document {
-  comparePassword: (password: string) => boolean;
   hashPassword: (password: string) => string;
-  getFullName(): string;
   hiddenPassword(): IUser;
 }
 
 // declare  statics
-export interface IUserModel extends Model<IUserDocument> {
+export interface IUserModel extends Model<IUserDocument>, IPaginateModel<IUserDocument> {
   findByUsername: ({
     email,
     userName,
@@ -24,7 +24,7 @@ export interface IUserModel extends Model<IUserDocument> {
   }) => Promise<IUserDocument>;
 }
 
-const schema: Schema = new Schema<IUser>(
+const schema = new Schema<IUser>(
   {
     email: {
       type: String,
@@ -77,6 +77,7 @@ schema.methods.hiddenPassword = function (): IUser {
   return obj;
 };
 
+// check authentication
 schema.statics.findByUsername = async function ({
   userName,
   email,
@@ -85,10 +86,12 @@ schema.statics.findByUsername = async function ({
   email: string;
 }): Promise<IUserDocument> {
   return this.findOne({
-    $or: [{ email: { $in: [email] } }, { userName: { $in: [userName] } }],
+    $or: [{ email }, { userName }],
   }).select("+password");
 };
 
-const User: IUserModel = model<IUserDocument, IUserModel>("User", schema);
+schema.plugin(mongoosePaginate);
+
+const User = model<IUserDocument, IUserModel>("User", schema);
 
 export default User;

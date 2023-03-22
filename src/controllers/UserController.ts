@@ -1,40 +1,20 @@
 import { Request, Response } from "express";
 
 // import { paginationPipeLine } from "@/utils/functions";
-import User from "@/models/UserModel";
 import { HttpCode } from "@constants/enum";
 import responseHandler from "@exceptions/ResponseHandler";
+import errorHandler from "@exceptions/ErrorHandler";
+import userService from "@services/userService";
 // import { IUser } from "@interfaces/userType";
 
-// const GET_USER_LIST_CONTROLLER = async (req: Request, res: Response) => {
-//   try {
-//     const { page = 1, limit = 2 } = req.query;
-
-//     const paginateOptions = {
-//       page: Number(page),
-//       limit: Number(limit),
-//     };
-
-//     const users = await User.aggregate(
-//       paginationPipeLine<IUserDocument>(paginateOptions, {}, [
-//         {
-//           $project: {
-//             password: 0,
-//           },
-//         },
-//         {
-//           $sort: {
-//             createdAt: -1,
-//           },
-//         },
-//       ]),
-//     ).exec();
-
-//     res.status(200).json({ data: users });
-//   } catch (error) {
-//     res.status(500).json({ message: error });
-//   }
-// };
+const GET_USER_LIST_CONTROLLER = async (req: Request, res: Response) => {
+  try {
+    const response = await userService.getList(req, res);
+    responseHandler(response.httpCode, response.message, response.data)(req, res);
+  } catch (error: any) {
+    errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
+  }
+};
 
 // const GET_DETAIL_CONTROLLER = async (req: Request, res: Response) => {
 //   try {
@@ -43,14 +23,14 @@ import responseHandler from "@exceptions/ResponseHandler";
 //     res.status(500).json({ message: error });
 //   }
 // };
-const GET_LIST_USER_CONTROLLER = async (req: Request, res: Response) => {
-  try {
-    const response = await User.find();
-    responseHandler(HttpCode.OK, undefined, response)(req, res);
-  } catch (error) {
-    res.status(500).json({ message: error });
-  }
-};
+// const GET_LIST_USER_CONTROLLER = async (req: Request, res: Response) => {
+//   try {
+//     const response = await User.find();
+//     responseHandler(HttpCode.OK, undefined, response)(req, res);
+//   } catch (error: any) {
+//     errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
+//   }
+// };
 
 // const UPDATE_CONTROLLER = async (_req: Request, res: Response) => {
 //   try {
@@ -88,7 +68,7 @@ const GET_LIST_USER_CONTROLLER = async (req: Request, res: Response) => {
 export default {
   // GET_USER_LIST_CONTROLLER,
   // GET_DETAIL_CONTROLLER,
-  GET_LIST_USER_CONTROLLER,
+  GET_USER_LIST_CONTROLLER,
   // UPDATE_CONTROLLER,
   // DELETE_CONTROLLER,
 };

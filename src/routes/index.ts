@@ -5,7 +5,7 @@ import AuthRouter from "./AuthRouter";
 import UserRouter from "./UserRouter";
 
 const routes = express();
-routes.use("/users", UserRouter);
+routes.use(UserRouter);
 // routes.use(CategoryRouter);
 // routes.use(SubCategoryRouter);
 // routes.use(ShopRouter);

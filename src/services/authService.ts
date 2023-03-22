@@ -48,9 +48,7 @@ const register = async (req: Request, res: Response) => {
     body.email = body.email.trim();
     body.userName = body.userName.trim();
 
-    const findByUser = await User.findOne({
-      $or: [{ email: body.email }, { userName: body.userName }],
-    });
+    const findByUser = await User.findByUsername({ email: body.email, userName: body.userName });
 
     if (findByUser) {
       return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.ACCOUNT_EXIST, true)(req, res);

@@ -4,7 +4,6 @@ import { createToken } from "@/utils/jwt";
 import authService from "@services/authService";
 import MESSAGES from "@constants/messages";
 import responseHandler from "@exceptions/ResponseHandler";
-import { AppError } from "@exceptions/AppError";
 import { HttpCode } from "@constants/enum";
 import errorHandler from "@exceptions/ErrorHandler";
 
@@ -19,20 +18,17 @@ import errorHandler from "@exceptions/ErrorHandler";
 //   }
 // };
 
-const LOGIN_CONTROLLER = async (req: Request) => {
+const LOGIN_CONTROLLER = async (req: Request, res: Response) => {
   try {
     const response = await authService.login(req);
 
     const token = createToken({ id: response._id, email: response.email });
 
-    responseHandler(200, MESSAGES.LOGIN_SUCCESS, {
+    responseHandler(HttpCode.OK, MESSAGES.LOGIN_SUCCESS, {
       accessToken: token,
-    });
+    })(req, res);
   } catch (error: any) {
-    throw new AppError({
-      httpCode: HttpCode.INTERNAL_SERVER_ERROR,
-      description: error.message,
-    });
+    errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
   }
 };
 
@@ -41,7 +37,7 @@ const REGISTER_CONTROLLER = async (req: Request, res: Response) => {
     const response = await authService.register(req, res);
     responseHandler(response.httpCode, response.message, response.data)(req, res);
   } catch (error: any) {
-    errorHandler(HttpCode.BAD_REQUEST, error.message)(req, res);
+    errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
   }
 };
 
