@@ -90,6 +90,15 @@ schema.statics.findByUsername = async function ({
   }).select("+password");
 };
 
+// format data
+schema.set("toJSON", {
+  transform(_doc, ret) {
+    ret.avatar = ret.avatar.url; // set avatar to the URL string
+    ret.coverImage = ret.coverImage.url; // set avatar to the URL string
+    return ret;
+  },
+});
+
 schema.plugin(mongoosePaginate);
 
 const User = model<IUserDocument, IUserModel>("User", schema);
