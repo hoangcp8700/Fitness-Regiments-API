@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 
-import { createToken } from "@/utils/jwt";
 import authService from "@services/authService";
-import MESSAGES from "@constants/messages";
 import responseHandler from "@exceptions/ResponseHandler";
 import { HttpCode } from "@constants/enum";
 import errorHandler from "@exceptions/ErrorHandler";
@@ -20,13 +18,8 @@ import errorHandler from "@exceptions/ErrorHandler";
 
 const LOGIN_CONTROLLER = async (req: Request, res: Response) => {
   try {
-    const response = await authService.login(req);
-
-    const token = createToken({ id: response._id, email: response.email });
-
-    responseHandler(HttpCode.OK, MESSAGES.LOGIN_SUCCESS, {
-      accessToken: token,
-    })(req, res);
+    const response = await authService.login(req, res);
+    responseHandler(response.httpCode, response.message, response.data)(req, res);
   } catch (error: any) {
     errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
   }

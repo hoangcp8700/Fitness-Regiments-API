@@ -13,15 +13,13 @@ export interface IUserDocument extends IUser, Document {
   hiddenPassword(): IUser;
 }
 
+interface FindByUserNameProps {
+  userName: string;
+  email?: string;
+}
 // declare  statics
 export interface IUserModel extends Model<IUserDocument>, IPaginateModel<IUserDocument> {
-  findByUsername: ({
-    email,
-    userName,
-  }: {
-    email: string;
-    userName: string;
-  }) => Promise<IUserDocument>;
+  findByUsername: (props: FindByUserNameProps) => Promise<IUserDocument>;
 }
 
 const schema = new Schema<IUser>(
@@ -81,12 +79,9 @@ schema.methods.hiddenPassword = function (): IUser {
 schema.statics.findByUsername = async function ({
   userName,
   email,
-}: {
-  userName: string;
-  email: string;
-}): Promise<IUserDocument> {
+}: FindByUserNameProps): Promise<IUserDocument> {
   return this.findOne({
-    $or: [{ email }, { userName }],
+    $or: [{ email: email || userName }, { userName }],
   }).select("+password");
 };
 

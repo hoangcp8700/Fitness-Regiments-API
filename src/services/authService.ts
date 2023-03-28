@@ -2,43 +2,42 @@ import { Request, Response } from "express";
 import { HydratedDocument } from "mongoose";
 
 import { HttpCode } from "@constants/enum";
-import { AppError } from "@exceptions/AppError";
 import MESSAGES from "@constants/messages";
 import User from "@models/UserModel";
 import { comparePasswordFC } from "@utils/functions";
 import { IUser } from "@interfaces/userType";
 import errorHandler from "@exceptions/ErrorHandler";
 import responseHandler from "@exceptions/ResponseHandler";
+import { createToken } from "@utils/jwt";
 
-const login = async (req: Request) => {
+const login = async (req: Request, res: Response) => {
   try {
     const { userName, password } = req.body;
-    const userNameRegex = userName.trim();
-    const user = await User.findOne({
-      $or: [{ email: userNameRegex }, { userName: userNameRegex }],
-    });
+    const userNameTrim = userName.trim();
+    const user = await User.findByUsername({ userName: userNameTrim });
 
     if (!user) {
-      throw new AppError({
-        httpCode: HttpCode.NOT_FOUND,
-        description: MESSAGES.USER_NOT_EXIST,
-      });
+      return errorHandler(HttpCode.NOT_FOUND, MESSAGES.USER_NOT_EXIST, true)(req, res);
     }
+
     const checkPassword = comparePasswordFC(user.password, password);
 
     if (!checkPassword) {
-      throw new AppError({
-        httpCode: HttpCode.NOT_FOUND,
-        description: MESSAGES.PASSWORD_INVALID,
-      });
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.PASSWORD_INVALID, true)(req, res);
     }
 
-    return user;
-  } catch (error) {
-    throw new AppError({
-      httpCode: HttpCode.UNAUTHORIZED,
-      description: MESSAGES.UNAUTHORIZED,
-    });
+    const token = createToken({ id: user._id, email: user.email });
+
+    return responseHandler(
+      HttpCode.OK,
+      MESSAGES.LOGIN_SUCCESS,
+      {
+        accessToken: token,
+      },
+      true,
+    )(req, res);
+  } catch (error: any) {
+    return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
   }
 };
 

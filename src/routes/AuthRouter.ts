@@ -19,7 +19,7 @@ const router = express.Router();
 // );
 // router.patch("/user", [middleware.verifyToken], UserController.UPDATE_CONTROLLER);
 
-router.post("/login", controller.LOGIN_CONTROLLER);
+router.post("/login", validateRequestBody(authValidate.loginSchema), controller.LOGIN_CONTROLLER);
 router.post(
   "/register",
   validateRequestBody(authValidate.registerSchema),

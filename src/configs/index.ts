@@ -26,7 +26,7 @@ const HASH_PASSWORD_OPTIONS = {
 
 const JWT_OPTIONS = {
   secretKey: SECRET_KEY,
-  expired: "1d",
+  expired: "1h",
   refresh: "1y",
 };
 
