@@ -1,5 +1,7 @@
 import { RoleType } from "@constants/enum";
 
+import { ThumbnailType } from "./base";
+
 export type IUser = {
   userName: string;
   password: string;
@@ -8,8 +10,8 @@ export type IUser = {
   nickName?: string;
   phone: string;
   gender?: string;
-  avatar?: string;
-  coverImage?: string;
+  avatar?: ThumbnailType;
+  coverImage?: ThumbnailType;
   dOB?: string;
   isVerify: boolean;
   role: RoleType;

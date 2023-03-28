@@ -28,11 +28,11 @@
     "forceConsistentCasingInFileNames": false,
     "skipLibCheck": true,
 
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@*": ["src/*"]
+      "@*": ["./src/*"]
     },
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "typeRoots": ["./node_modules/@types", "./src/interfaces"]
   },
   "include": ["./src/**/*.ts", "./src/**/*.d.ts"],
   "exclude": ["node_modules"]

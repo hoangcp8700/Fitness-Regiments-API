@@ -91,6 +91,9 @@ const PASSPORT_OPTIONS = {
   },
 };
 
+// Array of allowed files
+const imgExtensions = ["png", "jpeg", "jpg"];
+
 export const CONFIG = {
   port: PORT,
   host: HOST,
@@ -107,4 +110,5 @@ export const CONFIG = {
   schemaValidateOptions: VALIDATE_SCHEMA_OPTIONS,
   passport: PASSPORT_OPTIONS,
   secretKey: SECRET_KEY,
+  imgExtensions,
 };

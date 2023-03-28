@@ -3,6 +3,7 @@ const MESSAGES = {
   USER_NOT_EXIST: "Account not exist",
   REGISTER_SUCCESS: "Register account success",
   UPDATE_USER_SUCCESS: "Update user successful",
+  UPDATE_AVATAR_SUCCESS: "Update avatar successful",
   DELETE_USER_SUCCESS: "Delete user successful",
   LOGIN_SUCCESS: "Login successful",
   VERIFY_ERROR: "Inactive account or unauthorized",
@@ -13,6 +14,13 @@ const MESSAGES = {
   UNAUTHORIZED: "Unauthorized",
   ACCOUNT_EXIST: "Email or Username already exists",
   CONNECT_DB_ERROR: "Connect to database error",
+};
+
+export const VALIDATE_MESSAGE = {
+  FILE_REQUIRED: "File required",
+  INVALID_FILE: (extensions: string) =>
+    `Invalid file. Only ${extensions} extensions files are allowed`,
+  FILE_TOO_LARGE: "File exceeds maximum",
 };
 
 export default MESSAGES;

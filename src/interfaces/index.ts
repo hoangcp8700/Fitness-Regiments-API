@@ -7,6 +7,7 @@ import { IUserDocument } from "@/models/UserModel";
 declare global {
   namespace Express {
     interface AuthInfo {}
+
     // tslint:disable-next-line:no-empty-interface
     interface User extends IUserDocument {}
 
