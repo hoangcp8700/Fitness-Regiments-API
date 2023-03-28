@@ -10,7 +10,6 @@ import { IPaginateModel } from "@interfaces/paginate";
 // declare methods
 export interface IUserDocument extends IUser, Document {
   hashPassword: (password: string) => string;
-  hiddenPassword(): IUser;
 }
 
 interface FindByUserNameProps {
@@ -73,12 +72,6 @@ schema.methods.hashPassword = function (password: string): string {
   return hashPasswordFC(password);
 };
 
-schema.methods.hiddenPassword = function (): IUser {
-  const obj = this.toObject(); // or var obj = this;
-  delete obj.password;
-  return obj;
-};
-
 // check authentication
 schema.statics.findByUsername = async function ({
   userName,
@@ -89,11 +82,18 @@ schema.statics.findByUsername = async function ({
   }).select("+password");
 };
 
+schema.methods.hiddenPassword = function (): IUser {
+  const obj = this.toObject(); // or var obj = this;
+  delete obj.password;
+  return obj;
+};
+
 // format data
 schema.set("toJSON", {
   transform(_doc, ret) {
     ret.avatar = ret.avatar.url; // set avatar to the URL string
     ret.coverImage = ret.coverImage.url; // set avatar to the URL string
+    delete ret.password;
     return ret;
   },
 });

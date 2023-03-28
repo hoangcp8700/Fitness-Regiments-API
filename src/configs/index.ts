@@ -40,6 +40,18 @@ const SMTP_INITIALIZE_OPTIONS = {
     pass: process.env.EMAIL_PASSWORD,
   },
 };
+const SMTP_OTHER = {
+  from: process.env.SMTP_FROM,
+};
+
+const SMTP_AUTH_INFO = {
+  type: process.env.SMTP_TYPE,
+  user: process.env.SMTP_USERNAME,
+  pass: process.env.SMTP_PASSWORD,
+  clientId: process.env.SMTP_CLIENT_ID,
+  clientSecret: process.env.SMTP_CLIENT_SECRET,
+  refresh_token: process.env.SMTP_REFRESH_TOKEN,
+};
 
 const CLOUDINARY_OPTIONS = {
   cloud_name: process.env.CLOUD_NAME,
@@ -102,6 +114,8 @@ export const CONFIG = {
   hashPassword: HASH_PASSWORD_OPTIONS,
   jwt: JWT_OPTIONS,
   smtp: SMTP_INITIALIZE_OPTIONS,
+  smtpAuthInfo: SMTP_AUTH_INFO,
+  smtpOther: SMTP_OTHER,
   cloudinary: CLOUDINARY_OPTIONS,
   urlClient: URL_CLIENT,
   urlServer: URL_SERVER,

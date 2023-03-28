@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
-import { HydratedDocument } from "mongoose";
 
 import { HttpCode } from "@constants/enum";
 import MESSAGES from "@constants/messages";
 import User from "@models/UserModel";
 import { comparePasswordFC } from "@utils/functions";
-import { IUser } from "@interfaces/userType";
 import errorHandler from "@exceptions/ErrorHandler";
 import responseHandler from "@exceptions/ResponseHandler";
-import { createToken, verifyCode } from "@utils/jwt";
+import { createCode, createToken, verifyCode } from "@utils/jwt";
+import ResetPassword from "@views/resetPassword";
+import { CONFIG } from "@configs";
+import nodeMailerConfig from "@configs/nodeMailer";
 
 const login = async (req: Request, res: Response) => {
   try {
@@ -53,9 +54,10 @@ const register = async (req: Request, res: Response) => {
       return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.ACCOUNT_EXIST, true)(req, res);
     }
 
-    const newUser: HydratedDocument<IUser> = new User(body);
+    const newUser = new User(body);
 
     await newUser.save();
+    console.log("🚀 ~ file: authService.ts:63 ~ register ~ newUser:", newUser);
 
     return responseHandler(HttpCode.OK, MESSAGES.REGISTER_SUCCESS, newUser, true)(req, res);
   } catch (error: any) {
@@ -119,9 +121,53 @@ const changePassword = async (req: Request, res: Response) => {
     return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
   }
 };
+
+const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { email },
+      { $set: { updatedAt: Date.now() } },
+      { new: true, select: "fullName nickName email password updatedAt" },
+    ).exec();
+
+    if (!user) {
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.USER_NOT_EXIST, true)(req, res);
+    }
+
+    const code = createCode(user.updatedAt);
+    const token = createToken({ id: user._id, email: user.email, password: user.password });
+
+    const mailOptions = {
+      to: email,
+      subject: "Thay đổi mật khẩu",
+      text: "Chúng tôi nhận được yêu cầu đổi mật khẩu từ bạn!",
+      html: ResetPassword({
+        url: CONFIG.urlClient || "",
+        fullName: user.nickName || user.fullName || "bạn",
+        token,
+        code,
+      }),
+    };
+
+    await nodeMailerConfig(mailOptions);
+
+    return responseHandler(
+      HttpCode.OK,
+      MESSAGES.FORGOT_PASSWORD_SUCCESS,
+      undefined,
+      true,
+    )(req, res);
+  } catch (error: any) {
+    return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
+  }
+};
+
 export default {
   login,
   register,
   resetPassword,
+  forgotPassword,
   changePassword,
 };

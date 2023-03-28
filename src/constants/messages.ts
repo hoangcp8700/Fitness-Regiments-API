@@ -10,6 +10,7 @@ const MESSAGES = {
   PASSWORD_INVALID: "Password invalid, please try again",
   RESET_PASSWORD_SUCCESS: "Reset password success",
   CHANGE_PASSWORD_SUCCESS: "Change password success",
+  FORGOT_PASSWORD_SUCCESS: "Please check your email to confirm your password",
   SERVER_ERROR: "Something went wrong with the server",
   ROUTER_NOT_EXIST: "Route not exist",
   NO_TOKEN_PROVIDE: "No token provided",

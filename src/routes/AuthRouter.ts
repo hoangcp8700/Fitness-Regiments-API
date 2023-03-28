@@ -20,6 +20,10 @@ router.patch(
   controller.CHANGE_PASSWORD,
 );
 
-// router.post("/forgot-password", controller.FORGOT_PASSWORD_CONTROLLER);
+router.post(
+  "/forgot-password",
+  validateRequestBody(authValidate.forgotPasswordSchema),
+  controller.FORGOT_PASSWORD_CONTROLLER,
+);
 // router.post("/reset-password", [middleware.verifyToken], controller.RESET_PASSWORD_CONTROLLER);
 export default router;
