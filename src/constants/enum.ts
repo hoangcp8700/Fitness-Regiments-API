@@ -1,6 +1,7 @@
 export enum RoleType {
   Admin = "admin",
   User = "user",
+  Supper = "superAdmin",
 }
 
 export enum HttpCode {

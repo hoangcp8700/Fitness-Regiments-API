@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { ICategoryDocument } from "@/services/category/model";
 // import { IShopDocument } from "@/services/shop/model";
 // import { ISubCategoryDocument } from "@/services/subCategory/model";

@@ -14,6 +14,7 @@ const MESSAGES = {
   UNAUTHORIZED: "Unauthorized",
   ACCOUNT_EXIST: "Email or Username already exists",
   CONNECT_DB_ERROR: "Connect to database error",
+  NO_PERMISSION: "No permission to access ",
 };
 
 export const VALIDATE_MESSAGE = {

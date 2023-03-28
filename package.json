@@ -11,7 +11,7 @@
     "prebuild": "yarn clean",
     "build": "tsc --p ./tsconfig.json",
     "start": "cross-env NODE_ENV=\"production\" node build/index.js",
-    "dev": "nodemon src/index.ts",
+    "dev": "ts-node-dev --prefer-ts true --no-notify -r tsconfig-paths/register --watch src --transpile-only src/index.ts",
     "prepare": "husky install"
   },
   "keywords": [],
@@ -42,10 +42,9 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
-    "nodemon": "^2.0.21",
     "prettier": "^2.8.4",
     "rimraf": "^4.4.0",
-    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.1.2",
     "typescript": "^5.0.2"
   },
