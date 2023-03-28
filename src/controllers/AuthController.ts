@@ -8,13 +8,13 @@ import errorHandler from "@exceptions/ErrorHandler";
 // import nodeMailerConfig from "@/configs/nodeMailer";
 // import ResetPassword from "@/views/resetPassword";
 
-// const GET_USER_CONTROLLER = async (req: Request, res: Response) => {
-//   try {
-//     res.status(200).json({ data: req.userInfo });
-//   } catch (error) {
-//     res.status(500).json({ message: error });
-//   }
-// };
+const GET_ME_CONTROLLER = async (req: Request, res: Response) => {
+  try {
+    responseHandler(HttpCode.OK, undefined, req.user)(req, res);
+  } catch (error: any) {
+    errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
+  }
+};
 
 const LOGIN_CONTROLLER = async (req: Request, res: Response) => {
   try {
@@ -80,95 +80,31 @@ const REGISTER_CONTROLLER = async (req: Request, res: Response) => {
 //   }
 // };
 
-// const RESET_PASSWORD_CONTROLLER = async (req: Request, res: Response) => {
-//   try {
-//     const { userID } = req;
-//     const { code, password } = req.body;
+// chua test
+const RESET_PASSWORD_CONTROLLER = async (req: Request, res: Response) => {
+  try {
+    const response = await authService.resetPassword(req, res);
+    responseHandler(response.httpCode, response.message, response.data)(req, res);
+  } catch (error: any) {
+    errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
+  }
+};
 
-//     const user = await User.findById(userID).select("password, updatedAt").exec();
-
-//     if (user) {
-//       const isVerifyCode = verifyCode(user.updatedAt, code);
-//       if (!isVerifyCode) {
-//         return res.status(404).send({
-//           message: {
-//             vi: CONSTANTS.CODE_INVALID.VI,
-//             en: CONSTANTS.CODE_INVALID.EN,
-//           },
-//         });
-//       }
-
-//       await user
-//         .updateOne({
-//           password: user.hashPassword(password),
-//         })
-//         .exec();
-
-//       return res.status(200).json({
-//         message: {
-//           vi: CONSTANTS.RESET_PASSWORD_SUCCESS.VI,
-//           en: CONSTANTS.RESET_PASSWORD_SUCCESS.EN,
-//         },
-//       });
-//     }
-//     return res.status(404).send({
-//       message: {
-//         vi: CONSTANTS.USER_NOT_EXIST.VI,
-//         en: CONSTANTS.USER_NOT_EXIST.EN,
-//       },
-//     });
-//   } catch (error) {
-//     return res.status(500).json({ message: error });
-//   }
-// };
-
-// const CHANGE_PASSWORD = async (req: Request, res: Response) => {
-//   try {
-//     const { passwordCurrent, password } = req.body;
-//     const { userID } = req;
-
-//     const user = await User.findById(userID).select("password").exec();
-
-//     if (user) {
-//       const checkPassword = user.comparePassword(passwordCurrent);
-
-//       if (!checkPassword) {
-//         return res.status(404).send({
-//           message: {
-//             vi: CONSTANTS.PASSWORD_INVALID.VI,
-//             en: CONSTANTS.PASSWORD_INVALID.EN,
-//           },
-//         });
-//       }
-
-//       await user
-//         .updateOne({
-//           password: user.hashPassword(password),
-//         })
-//         .exec();
-
-//       return res.status(200).json({
-//         message: {
-//           vi: CONSTANTS.CHANGE_PASSWORD_SUCCESS.VI,
-//           en: CONSTANTS.CHANGE_PASSWORD_SUCCESS.EN,
-//         },
-//       });
-//     }
-//     return res.status(404).send({
-//       message: {
-//         vi: CONSTANTS.USER_NOT_EXIST.VI,
-//         en: CONSTANTS.USER_NOT_EXIST.EN,
-//       },
-//     });
-//   } catch (error) {
-//     return res.status(500).json({ message: error });
-//   }
-// };
+const CHANGE_PASSWORD = async (req: Request, res: Response) => {
+  try {
+    const response = await authService.changePassword(req, res);
+    responseHandler(response.httpCode, response.message, response.data)(req, res);
+  } catch (error: any) {
+    errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
+  }
+};
 
 export default {
-  // GET_USER_CONTROLLER,
+  GET_ME_CONTROLLER,
   LOGIN_CONTROLLER,
   REGISTER_CONTROLLER,
+  RESET_PASSWORD_CONTROLLER,
+  CHANGE_PASSWORD,
   // FORGOT_PASSWORD_CONTROLLER,
   // RESET_PASSWORD_CONTROLLER,
   // CHANGE_PASSWORD,

@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 import { CONFIG } from "@/configs";
 
-const parseToken = (token: string) => jwt.verify(token, CONFIG.jwt.secretKey || "");
+const parseToken = (token: string) => jwt.verify(token, CONFIG.jwt.secretKey);
 
 export const createToken = <T extends object>(data: T) =>
   jwt.sign(data, CONFIG.jwt.secretKey || "", { expiresIn: CONFIG.jwt.expired });

@@ -69,6 +69,10 @@ schema.pre<IUser>("save", function (next) {
   next();
 });
 
+schema.methods.hashPassword = function (password: string): string {
+  return hashPasswordFC(password);
+};
+
 schema.methods.hiddenPassword = function (): IUser {
   const obj = this.toObject(); // or var obj = this;
   delete obj.password;

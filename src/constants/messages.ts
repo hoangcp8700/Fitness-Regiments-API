@@ -8,13 +8,16 @@ const MESSAGES = {
   LOGIN_SUCCESS: "Login successful",
   VERIFY_ERROR: "Inactive account or unauthorized",
   PASSWORD_INVALID: "Password invalid, please try again",
+  RESET_PASSWORD_SUCCESS: "Reset password success",
+  CHANGE_PASSWORD_SUCCESS: "Change password success",
   SERVER_ERROR: "Something went wrong with the server",
   ROUTER_NOT_EXIST: "Route not exist",
   NO_TOKEN_PROVIDE: "No token provided",
   UNAUTHORIZED: "Unauthorized",
   ACCOUNT_EXIST: "Email or Username already exists",
   CONNECT_DB_ERROR: "Connect to database error",
-  NO_PERMISSION: "No permission to access ",
+  NO_PERMISSION: "No permission to access",
+  CODE_INVALID: "Code invalid",
 };
 
 export const VALIDATE_MESSAGE = {

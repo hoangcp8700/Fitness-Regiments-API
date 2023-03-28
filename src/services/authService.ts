@@ -8,7 +8,7 @@ import { comparePasswordFC } from "@utils/functions";
 import { IUser } from "@interfaces/userType";
 import errorHandler from "@exceptions/ErrorHandler";
 import responseHandler from "@exceptions/ResponseHandler";
-import { createToken } from "@utils/jwt";
+import { createToken, verifyCode } from "@utils/jwt";
 
 const login = async (req: Request, res: Response) => {
   try {
@@ -57,13 +57,71 @@ const register = async (req: Request, res: Response) => {
 
     await newUser.save();
 
-    return responseHandler(200, MESSAGES.REGISTER_SUCCESS, newUser, true)(req, res);
+    return responseHandler(HttpCode.OK, MESSAGES.REGISTER_SUCCESS, newUser, true)(req, res);
   } catch (error: any) {
     return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
   }
 };
 
+const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req;
+    const { code, password } = req.body;
+
+    const user = await User.findById(userID).select("password, updatedAt").exec();
+
+    if (!user) {
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.USER_NOT_EXIST, true)(req, res);
+    }
+
+    const isVerifyCode = verifyCode(user.updatedAt, code);
+    if (!isVerifyCode) {
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.CODE_INVALID, true)(req, res);
+    }
+
+    await user.updateOne({
+      password: user.hashPassword(password),
+    });
+
+    return responseHandler(HttpCode.OK, MESSAGES.RESET_PASSWORD_SUCCESS, undefined, true)(req, res);
+  } catch (error: any) {
+    return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
+  }
+};
+
+const changePassword = async (req: Request, res: Response) => {
+  try {
+    const { passwordCurrent, password } = req.body;
+    const { userID } = req;
+
+    const user = await User.findById(userID).select("password").exec();
+
+    if (!user) {
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.USER_NOT_EXIST, true)(req, res);
+    }
+
+    const checkPassword = comparePasswordFC(user.password, passwordCurrent);
+    if (!checkPassword) {
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.PASSWORD_INVALID, true)(req, res);
+    }
+
+    await user.updateOne({
+      password: user.hashPassword(password),
+    });
+
+    return responseHandler(
+      HttpCode.OK,
+      MESSAGES.CHANGE_PASSWORD_SUCCESS,
+      undefined,
+      true,
+    )(req, res);
+  } catch (error: any) {
+    return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
+  }
+};
 export default {
   login,
   register,
+  resetPassword,
+  changePassword,
 };

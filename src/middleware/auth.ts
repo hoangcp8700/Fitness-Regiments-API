@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
+import mongoose from "mongoose";
 
 import parseToken from "@/utils/jwt";
 import MESSAGES from "@/constants/messages";
@@ -14,7 +15,7 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
       const token = headerAuthorization.split(" ")[1];
       const decoded = parseToken(token) as JwtPayload;
       req.userID = decoded.id;
-      next();
+      return next();
     }
     return errorHandler(HttpCode.NO_TOKEN, MESSAGES.NO_TOKEN_PROVIDE)(req, res);
   } catch (error: any) {
@@ -25,93 +26,54 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userID } = req;
-    const user = await User.findById(userID);
+    const user = await User.findById(userID).exec();
     if (!user || user.role === RoleType.User) {
-      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.NO_PERMISSION, true)(req, res);
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.NO_PERMISSION)(req, res);
     }
 
     next();
   } catch (error) {
-    res.status(401).json({
-      message: "Unauthorized",
-      error,
-    });
+    return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, MESSAGES.SERVER_ERROR)(req, res);
   }
 };
 
 const isSuperAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userID } = req;
-    const user = await User.findById(userID);
+    const user = await User.findById(userID).exec();
     if (!user || user.role === RoleType.Supper) {
-      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.NO_PERMISSION, true)(req, res);
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.NO_PERMISSION)(req, res);
     }
 
     next();
   } catch (error) {
-    res.status(401).json({
-      message: "Unauthorized",
-      error,
-    });
+    return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, MESSAGES.SERVER_ERROR)(req, res);
   }
 };
 
-// const checkUserExistByID = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const userID = new mongoose.Types.ObjectId(req?.userID || req?.params?.id);
-//     User.aggregate(
-//       [
-//         { $match: { _id: userID } },
-//         {
-//           $project: {
-//             password: 0,
-//           },
-//         },
-//       ],
-//       (error: any, user: IUser[]) => {
-//         if (!user || error) {
-//           return res.status(404).json({
-//             message: MESSAGES.USER_NOT_EXIST,
-//           });
-//         }
-//         req.userInfo = user[0];
-//         return next();
-//       },
-//     );
-//   } catch (error) {
-//     res.status(401).json({
-//       message: "Unauthorized",
-//       error,
-//     });
-//   }
-// };
+const getMe = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userID } = req;
+    const id = new mongoose.Types.ObjectId(userID);
 
-// const roleAccess = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const user = await User.findById(req?.userID).exec();
+    const response = await User.findById(id).exec();
 
-//     if (!user?.isVerify && user?.role !== "admin") {
-//       return res.status(401).json({
-//         message: MESSAGES.VERIFY_ERROR,
-//       });
-//     }
-//     return next();
-//   } catch (error) {
-//     return res.status(401).json({
-//       message: MESSAGES.VERIFY_ERROR,
-//       error,
-//     });
-//   }
-// };
+    if (!response) {
+      return errorHandler(HttpCode.NOT_FOUND, MESSAGES.USER_NOT_EXIST)(req, res);
+    }
+
+    req.user = response;
+    next();
+  } catch (error) {
+    return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, MESSAGES.SERVER_ERROR)(req, res);
+  }
+};
 
 const authMiddleware = {
   verifyToken,
+  getMe,
   isAdmin,
   isSuperAdmin,
-  // verifyTokenNoRequired,
-  // checkUserExistByID,
-  // roleAccess,
-  // isAdmin,
 };
 
 export default authMiddleware;

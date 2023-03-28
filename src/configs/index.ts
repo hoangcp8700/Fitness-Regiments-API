@@ -12,8 +12,7 @@ export const router = express.Router();
 const PORT = process.env.PORT || "5000";
 const HOST = process.env.HOST || os.hostname();
 const SECRET_KEY = process.env.SECRET_KEY as string;
-const { URL_CLIENT } = process.env;
-const { URL_SERVER } = process.env;
+const { URL_CLIENT, URL_SERVER } = process.env;
 
 const CORS_OPTIONS = {
   origin: "*",
