@@ -1,17 +1,13 @@
-import SMTPTransport from "nodemailer/lib/smtp-transport";
 import { OAuth2Client } from "google-auth-library";
 import nodemailer, { SendMailOptions } from "nodemailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 import { CONFIG } from "@configs";
+import { AppError } from "@exceptions/AppError";
+import { HttpCode } from "@constants/enum";
 
-const config = (myAccessToken: string) => {
-  const options = {
-    service: "gmail",
-    auth: {
-      ...CONFIG.smtpAuthInfo,
-      accessToken: myAccessToken,
-    },
-  };
+const config = (accessToken: string) => {
+  const options = CONFIG.smtp(accessToken);
   return nodemailer.createTransport(options as SMTPTransport.Options);
 };
 
@@ -20,11 +16,12 @@ const nodeMailerConfig = async (mailOptions: SendMailOptions) => {
     const myOAuth2Client = new OAuth2Client(
       CONFIG.smtpAuthInfo.clientId,
       CONFIG.smtpAuthInfo.clientSecret,
+      CONFIG.urlClient,
     );
 
     // Set Refresh Token vào OAuth2Client Credentials
     myOAuth2Client.setCredentials({
-      refresh_token: CONFIG.smtpAuthInfo.refresh_token,
+      refresh_token: CONFIG.smtpAuthInfo.refreshToken,
     });
 
     const myAccessTokenObject = await myOAuth2Client.getAccessToken();
@@ -36,8 +33,11 @@ const nodeMailerConfig = async (mailOptions: SendMailOptions) => {
       from: CONFIG.smtpOther.from,
       ...mailOptions,
     });
-  } catch (error) {
-    return error;
+  } catch (error: any) {
+    throw new AppError({
+      httpCode: HttpCode.BAD_REQUEST,
+      description: error.message,
+    });
   }
 };
 

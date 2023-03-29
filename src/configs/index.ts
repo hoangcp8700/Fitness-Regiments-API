@@ -31,27 +31,29 @@ const JWT_OPTIONS = {
 
 const MONGOOSE_OPTIONS = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.zkxzpff.mongodb.net/?retryWrites=true&w=majority`;
 
-const SMTP_INITIALIZE_OPTIONS = {
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USERNAME,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-};
 const SMTP_OTHER = {
   from: process.env.SMTP_FROM,
 };
 
 const SMTP_AUTH_INFO = {
-  type: process.env.SMTP_TYPE,
+  type: "OAuth2",
   user: process.env.SMTP_USERNAME,
   pass: process.env.SMTP_PASSWORD,
   clientId: process.env.SMTP_CLIENT_ID,
   clientSecret: process.env.SMTP_CLIENT_SECRET,
-  refresh_token: process.env.SMTP_REFRESH_TOKEN,
+  refreshToken: process.env.SMTP_REFRESH_TOKEN,
 };
+
+const SMTP_INITIALIZE_OPTIONS = (accessToken: string) => ({
+  service: "gmail",
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: false,
+  auth: {
+    ...SMTP_AUTH_INFO,
+    accessToken,
+  },
+});
 
 const CLOUDINARY_OPTIONS = {
   cloud_name: process.env.CLOUD_NAME,
@@ -108,6 +110,7 @@ const imgExtensions = ["png", "jpeg", "jpg"];
 export const CONFIG = {
   port: PORT,
   host: HOST,
+  urlClient: URL_CLIENT,
   mongoose: MONGOOSE_OPTIONS,
   accessTokenExpiresIn: 15,
   corsOptions: CORS_OPTIONS,
@@ -117,7 +120,6 @@ export const CONFIG = {
   smtpAuthInfo: SMTP_AUTH_INFO,
   smtpOther: SMTP_OTHER,
   cloudinary: CLOUDINARY_OPTIONS,
-  urlClient: URL_CLIENT,
   urlServer: URL_SERVER,
   routes: ROUTES_CONSTANTS,
   schemaValidateOptions: VALIDATE_SCHEMA_OPTIONS,
