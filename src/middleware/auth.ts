@@ -23,29 +23,35 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { userID } = req;
-    const user = await User.findById(userID).exec();
-    if (!user || user.role === RoleType.User) {
-      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.NO_PERMISSION)(req, res);
-    }
+const isAdmin =
+  (isResponse?: boolean) => async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { userID } = req;
+      const user = await User.findById(userID).exec();
+      if (!user || user.role === RoleType.User) {
+        if (!isResponse) {
+          return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.NO_PERMISSION)(req, res);
+        }
+        req.isAdmin = false;
+      } else {
+        req.isAdmin = true;
+      }
 
-    next();
-  } catch (error) {
-    return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, MESSAGES.SERVER_ERROR)(req, res);
-  }
-};
+      return next();
+    } catch (error) {
+      return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, MESSAGES.SERVER_ERROR)(req, res);
+    }
+  };
 
 const isSuperAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userID } = req;
     const user = await User.findById(userID).exec();
-    if (!user || user.role === RoleType.Supper) {
+    if (!user || user.role !== RoleType.Supper) {
       return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.NO_PERMISSION)(req, res);
     }
 
-    next();
+    return next();
   } catch (error) {
     return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, MESSAGES.SERVER_ERROR)(req, res);
   }

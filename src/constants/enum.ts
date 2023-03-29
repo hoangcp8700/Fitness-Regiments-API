@@ -3,6 +3,10 @@ export enum RoleType {
   User = "user",
   Supper = "superAdmin",
 }
+export enum RoleCategoryType {
+  All = "all",
+  User = "user",
+}
 
 export enum HttpCode {
   OK = 200,

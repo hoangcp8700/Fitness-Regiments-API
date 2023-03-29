@@ -3,10 +3,11 @@ import express from "express";
 // import OAuth from "@/services/OAuth";
 import AuthRouter from "./AuthRouter";
 import UserRouter from "./UserRouter";
+import CategoryRouter from "./CategoryRouter";
 
 const routes = express();
 routes.use(UserRouter);
-// routes.use(CategoryRouter);
+routes.use(CategoryRouter);
 // routes.use(SubCategoryRouter);
 // routes.use(ShopRouter);
 // routes.use(ShopUserRouter);

@@ -35,7 +35,7 @@ const getDetail = async (req: Request, res: Response) => {
     if (!response) {
       return errorHandler(HttpCode.NOT_FOUND, MESSAGES.USER_NOT_EXIST, true)(req, res);
     }
-    return response;
+    return responseHandler(HttpCode.OK, undefined, response, true)(req, res);
   } catch (error: any) {
     return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
   }

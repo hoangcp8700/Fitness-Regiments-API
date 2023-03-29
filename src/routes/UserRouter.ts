@@ -10,7 +10,7 @@ const router = express.Router();
 router.get(
   "/users",
   [authMiddleware.verifyToken, authMiddleware.isAdmin],
-  controller.GET_USER_LIST_CONTROLLER,
+  controller.GET_LIST_CONTROLLER,
 );
 router.get("/users/:id", controller.GET_DETAIL_CONTROLLER);
 router.patch(
