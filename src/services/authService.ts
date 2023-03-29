@@ -7,7 +7,7 @@ import { comparePasswordFC } from "@utils/functions";
 import errorHandler from "@exceptions/ErrorHandler";
 import responseHandler from "@exceptions/ResponseHandler";
 import { createCode, createToken, verifyCode } from "@utils/jwt";
-import ResetPassword from "@views/resetPassword";
+import ResetPasswordView from "@views/resetPassword";
 import { CONFIG } from "@configs";
 import nodeMailerConfig from "@configs/nodeMailer";
 
@@ -65,32 +65,6 @@ const register = async (req: Request, res: Response) => {
   }
 };
 
-const resetPassword = async (req: Request, res: Response) => {
-  try {
-    const { userID } = req;
-    const { code, password } = req.body;
-
-    const user = await User.findById(userID).select("password, updatedAt").exec();
-
-    if (!user) {
-      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.USER_NOT_EXIST, true)(req, res);
-    }
-
-    const isVerifyCode = verifyCode(user.updatedAt, code);
-    if (!isVerifyCode) {
-      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.CODE_INVALID, true)(req, res);
-    }
-
-    await user.updateOne({
-      password: user.hashPassword(password),
-    });
-
-    return responseHandler(HttpCode.OK, MESSAGES.RESET_PASSWORD_SUCCESS, undefined, true)(req, res);
-  } catch (error: any) {
-    return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
-  }
-};
-
 const changePassword = async (req: Request, res: Response) => {
   try {
     const { passwordCurrent, password } = req.body;
@@ -143,7 +117,7 @@ const forgotPassword = async (req: Request, res: Response) => {
       to: email,
       subject: "Thay đổi mật khẩu",
       text: "Chúng tôi nhận được yêu cầu đổi mật khẩu từ bạn!",
-      html: ResetPassword({
+      html: ResetPasswordView({
         url: CONFIG.urlClient || "",
         fullName: user.nickName || user.fullName || "bạn",
         token,
@@ -159,6 +133,33 @@ const forgotPassword = async (req: Request, res: Response) => {
       undefined,
       true,
     )(req, res);
+  } catch (error: any) {
+    return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
+  }
+};
+
+const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req;
+    const { code, password } = req.body;
+
+    const user = await User.findById(userID).select("password, updatedAt").exec();
+    if (!user) {
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.USER_NOT_EXIST, true)(req, res);
+    }
+
+    const isVerifyCode = verifyCode(user.updatedAt, code);
+    if (!isVerifyCode) {
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.CODE_INVALID, true)(req, res);
+    }
+
+    await user
+      .updateOne({
+        password: user.hashPassword(password),
+      })
+      .exec();
+
+    return responseHandler(HttpCode.OK, MESSAGES.RESET_PASSWORD_SUCCESS, undefined, true)(req, res);
   } catch (error: any) {
     return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
   }

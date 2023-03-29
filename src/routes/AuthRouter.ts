@@ -25,5 +25,11 @@ router.post(
   validateRequestBody(authValidate.forgotPasswordSchema),
   controller.FORGOT_PASSWORD_CONTROLLER,
 );
-// router.post("/reset-password", [middleware.verifyToken], controller.RESET_PASSWORD_CONTROLLER);
+
+router.post(
+  "/reset-password",
+  [authMiddleware.verifyToken, validateRequestBody(authValidate.resetPasswordSchema)],
+  controller.RESET_PASSWORD_CONTROLLER,
+);
+
 export default router;

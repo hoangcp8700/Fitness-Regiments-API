@@ -20,9 +20,15 @@ const forgotPasswordSchema = yup.object().shape({
   email: yup.string().required(),
 });
 
+const resetPasswordSchema = yup.object().shape({
+  code: yup.string().required(),
+  password: yup.string().required(),
+});
+
 export default {
   registerSchema,
   loginSchema,
   changePasswordSchema,
   forgotPasswordSchema,
+  resetPasswordSchema,
 };

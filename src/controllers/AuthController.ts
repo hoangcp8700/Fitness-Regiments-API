@@ -43,7 +43,6 @@ const FORGOT_PASSWORD_CONTROLLER = async (req: Request, res: Response) => {
   }
 };
 
-// chua test
 const RESET_PASSWORD_CONTROLLER = async (req: Request, res: Response) => {
   try {
     const response = await authService.resetPassword(req, res);
