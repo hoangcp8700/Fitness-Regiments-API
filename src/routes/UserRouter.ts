@@ -1,6 +1,5 @@
 import express from "express";
 
-// import authMiddleware from "@middleware/auth";
 import controller from "@/controllers/UserController";
 import MULTER from "@configs/multer";
 import { checkFileIsImage } from "@middleware/file";
@@ -17,11 +16,10 @@ router.get("/users/:id", controller.GET_DETAIL_CONTROLLER);
 router.patch(
   "/users/:id/upload-avatar",
   MULTER.single("file"),
-  [checkFileIsImage],
-  // [authMiddleware.verifyToken, validators.productsSchemaValidate, middleware.checkForm],
+  [authMiddleware.verifyToken, checkFileIsImage],
   controller.UPLOAD_AVATAR_CONTROLLER,
 );
-router.patch("/users/:id", controller.UPDATE_CONTROLLER);
+router.patch("/users/:id", [authMiddleware.verifyToken], controller.UPDATE_CONTROLLER);
 router.delete(
   "/users/:id",
   [authMiddleware.verifyToken, authMiddleware.isSuperAdmin],
