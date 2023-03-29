@@ -6,10 +6,13 @@ import User from "@models/UserModel";
 import { comparePasswordFC } from "@utils/functions";
 import errorHandler from "@exceptions/ErrorHandler";
 import responseHandler from "@exceptions/ResponseHandler";
-import { createCode, createToken, verifyCode } from "@utils/jwt";
+import { createToken } from "@utils/jwt";
 import ResetPasswordView from "@views/resetPassword";
 import { CONFIG } from "@configs";
 import nodeMailerConfig from "@configs/nodeMailer";
+import Code from "@models/CodeModel";
+
+import codeService from "./codeService";
 
 const login = async (req: Request, res: Response) => {
   try {
@@ -57,7 +60,6 @@ const register = async (req: Request, res: Response) => {
     const newUser = new User(body);
 
     await newUser.save();
-    console.log("🚀 ~ file: authService.ts:63 ~ register ~ newUser:", newUser);
 
     return responseHandler(HttpCode.OK, MESSAGES.REGISTER_SUCCESS, newUser, true)(req, res);
   } catch (error: any) {
@@ -100,18 +102,14 @@ const forgotPassword = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
 
-    const user = await User.findOneAndUpdate(
-      { email },
-      { $set: { updatedAt: Date.now() } },
-      { new: true, select: "fullName nickName email password updatedAt" },
-    ).exec();
+    const user = await User.findOne({ email }).exec();
 
     if (!user) {
       return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.USER_NOT_EXIST, true)(req, res);
     }
 
-    const code = createCode(user.updatedAt);
-    const token = createToken({ id: user._id, email: user.email, password: user.password });
+    const { otp } = await Code.createOrUpdateCode(user.id);
+    const token = createToken({ id: user._id, email: user.email, password: user.password }, "30m"); // create token with 15 minute
 
     const mailOptions = {
       to: email,
@@ -121,7 +119,7 @@ const forgotPassword = async (req: Request, res: Response) => {
         url: CONFIG.urlClient || "",
         fullName: user.nickName || user.fullName || "bạn",
         token,
-        code,
+        code: otp,
       }),
     };
 
@@ -141,23 +139,24 @@ const forgotPassword = async (req: Request, res: Response) => {
 const resetPassword = async (req: Request, res: Response) => {
   try {
     const { userID } = req;
-    const { code, password } = req.body;
+    const { password } = req.body;
 
     const user = await User.findById(userID).select("password, updatedAt").exec();
     if (!user) {
       return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.USER_NOT_EXIST, true)(req, res);
     }
 
-    const isVerifyCode = verifyCode(user.updatedAt, code);
-    if (!isVerifyCode) {
-      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.CODE_INVALID, true)(req, res);
+    // NOTE: handle OTP ---------------------------------
+    const response = await codeService.verify(req, res);
+    if (!response.isSuccess) {
+      return responseHandler(response.httpCode, response.message, response.data, true)(req, res);
     }
 
-    await user
-      .updateOne({
-        password: user.hashPassword(password),
-      })
-      .exec();
+    // -----------------------------------------------
+    await user.updateOne({
+      password: user.hashPassword(password),
+    });
+    await codeService.deleteCode(req, res);
 
     return responseHandler(HttpCode.OK, MESSAGES.RESET_PASSWORD_SUCCESS, undefined, true)(req, res);
   } catch (error: any) {

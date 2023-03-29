@@ -19,6 +19,7 @@ const MESSAGES = {
   CONNECT_DB_ERROR: "Connect to database error",
   NO_PERMISSION: "No permission to access",
   CODE_INVALID: "Code invalid",
+  CODE_EXPIRED: "Code expired",
 };
 
 export const VALIDATE_MESSAGE = {

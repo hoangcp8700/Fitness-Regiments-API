@@ -1,4 +1,4 @@
-import { format, formatDistanceToNow, getDay } from "date-fns";
+import { addMinutes, format, formatDistanceToNow, getDay } from "date-fns";
 
 // ----------------------------------------------------------------------
 
@@ -61,4 +61,14 @@ export function fTime(date: string) {
 export default function timezone() {
   const date = new Date();
   return date.setHours(date.getHours() + 7);
+}
+
+export function fAddMinute(minute: number) {
+  const currentTime = timezone();
+  return addMinutes(currentTime, minute);
+}
+
+export function isExpiredTime(expirationTime: Date) {
+  const currentTime = timezone();
+  return currentTime > expirationTime.getTime();
 }
