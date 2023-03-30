@@ -61,10 +61,6 @@ const CLOUDINARY_OPTIONS = {
   api_secret: process.env.CLOUD_SECRET,
 };
 
-const ROUTES_CONSTANTS = {
-  RESET_PASSWORD: "reset-password",
-};
-
 // schema options
 const VALIDATE_SCHEMA_OPTIONS = {
   abortEarly: false, // include all errors
@@ -121,7 +117,6 @@ export const CONFIG = {
   smtpOther: SMTP_OTHER,
   cloudinary: CLOUDINARY_OPTIONS,
   urlServer: URL_SERVER,
-  routes: ROUTES_CONSTANTS,
   schemaValidateOptions: VALIDATE_SCHEMA_OPTIONS,
   passport: PASSPORT_OPTIONS,
   secretKey: SECRET_KEY,

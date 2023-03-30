@@ -1,4 +1,4 @@
-import { CONFIG } from "@/configs";
+import ROUTES_CONSTANTS from "@routes/path";
 
 interface ResetPasswordTemplateProps {
   url: string;
@@ -89,7 +89,7 @@ const ResetPassword = ({
                     <span>
                       Không chia sẽ link này với bất kì ai!</span>
                     <div style="margin: 35px auto 0; width: fit-content">
-                      <a href="${process.env.URI_CLIENT}/auth/${CONFIG.routes.RESET_PASSWORD}?accessToken=${token}"
+                      <a href="${process.env.URI_CLIENT}/auth/${ROUTES_CONSTANTS.RESET_PASSWORD}?accessToken=${token}"
                         target="_blank"
                         style="background:#00aeef;text-decoration:none !important; font-weight:500; color:#fff; font-size:14px;padding:10px 24px;border-radius:50px;">
                         Đặt lại mật khẩu

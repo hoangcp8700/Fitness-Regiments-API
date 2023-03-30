@@ -17,4 +17,8 @@ export type IUser = {
   role: RoleType;
   createdAt: Date;
   updatedAt: Date;
+  socials?: {
+    providerName: string;
+    providerID: string;
+  }[];
 };

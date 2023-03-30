@@ -1,121 +1,45 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { Request, Response } from "express";
+import { Request, Response } from "express";
 
-// import ROUTES_CONSTANTS from "@/routes/variables";
-// import User from "@/services/user/model";
-// import { ProfileSocialPassPort } from "@/configs/passport";
-// import { MESSAGES } from "@/constants";
-// import { createToken } from "@/utils/jwt";
+import { HttpCode } from "@constants/enum";
+import errorHandler from "@exceptions/ErrorHandler";
+import responseHandler from "@exceptions/ResponseHandler";
+import oauthService from "@services/oauthService";
 
-// const RedirectRequest = (
-//   provider: keyof typeof ROUTES_CONSTANTS.OAUTH,
-//   accessToken: string,
-//   providerID: string,
-//   email: string,
-//   id: string,
-// ): string => {
-//   const token = createToken({ id, email });
-//   return `${
-//     ROUTES_CONSTANTS.OAUTH[provider as keyof typeof ROUTES_CONSTANTS.OAUTH].SUCCESS
-//   }?ppT=${accessToken}&ppId=${providerID}&clientT=${token}&end=true`;
-// };
+const GOOGLE_CALLBACK_CONTROLLER = async (req: Request, res: Response) => {
+  try {
+    const response = await oauthService.google(req, res);
 
-// const OAuthRequest = async (profile: ProfileSocialPassPort) => {
-//   const { providerName, providerID, accessToken, ...restBody } = profile;
-//   const currentUser = await User.findOne({ email: restBody.email }).exec();
+    if (response.isSuccess) {
+      return res.redirect(response.data);
+    }
+    responseHandler(response.httpCode, response.message, undefined)(req, res);
+  } catch (error: any) {
+    errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
+  }
+};
 
-//   // create user and create social
-//   if (!currentUser) {
-//     return new User({
-//       ...restBody,
-//       socials: [{ providerName, providerID }],
-//     }).save();
-//   }
-//   // have account and have connect socials
-//   if (currentUser && currentUser?.socials && currentUser.socials.length) {
-//     const checkExistsSocial = currentUser.socials.findIndex(
-//       (ele) => ele.providerName === providerName,
-//     );
-//     if (checkExistsSocial === -1) {
-//       return currentUser.updateOne({ $push: { socials: { providerName, providerID } } }).exec();
-//     }
-//   }
-//   // have account and but not have connect socials
-//   await currentUser.updateOne({ socials: [{ providerName, providerID }] }).exec();
-//   return currentUser;
-// };
+const FACEBOOK_CALLBACK_CONTROLLER = async (req: Request, res: Response) => {
+  try {
+    const response = await oauthService.facebook(req, res);
+    if (response.isSuccess) {
+      return res.redirect(response.data);
+    }
+    responseHandler(response.httpCode, response.message, undefined)(req, res);
+  } catch (error: any) {
+    errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
+  }
+};
 
-// const GOOGLE_CALLBACK = async (req: Request, res: Response) => {
-//   try {
-//     const user = req.user as any;
-//     const newUser = await OAuthRequest(user);
-//     const result = RedirectRequest(
-//       "GOOGLE",
-//       user?.accessToken,
-//       user?.providerID,
-//       user?.email,
-//       newUser._id,
-//     );
-
-//     res.redirect(result);
-//   } catch (error) {
-//     res.status(500).json({ message: error });
-//   }
-// };
-
-// const GITHUB_CALLBACK = async (req: Request, res: Response) => {
-//   try {
-//     const user = req.user as any;
-//     const newUser = await OAuthRequest(user);
-//     const result = RedirectRequest(
-//       "GITHUB",
-//       user?.accessToken,
-//       user?.providerID,
-//       user?.email,
-//       newUser._id,
-//     );
-
-//     res.redirect(result);
-//   } catch (error) {
-//     res.status(500).json({ message: error });
-//   }
-// };
-
-// const FACEBOOK_CALLBACK = async (req: Request, res: Response) => {
-//   try {
-//     const user = req.user as any;
-//     const newUser = await OAuthRequest(user);
-//     const result = RedirectRequest(
-//       "FACEBOOK",
-//       user?.accessToken,
-//       user?.providerID,
-//       user?.email,
-//       newUser._id,
-//     );
-
-//     res.redirect(result);
-//   } catch (error) {
-//     res.status(500).json({ message: error });
-//   }
-// };
-
-// const LOGOUT = async (req: Request, res: Response) => {
-//   try {
-//     req.logout(() => {});
-//     if (req.session) {
-//       req.session.destroy(() => {});
-//     }
-//     res.status(200).json({
-//       message: MESSAGES.LOGOUT_SUCCESS,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: error });
-//   }
-// };
-
-// export default {
-//   GOOGLE_CALLBACK,
-//   GITHUB_CALLBACK,
-//   FACEBOOK_CALLBACK,
-//   LOGOUT,
-// };
+const LOGOUT_CONTROLLER = async (req: Request, res: Response) => {
+  try {
+    const response = await oauthService.logout(req, res);
+    responseHandler(response.httpCode, response.message, undefined)(req, res);
+  } catch (error: any) {
+    errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
+  }
+};
+export default {
+  GOOGLE_CALLBACK_CONTROLLER,
+  FACEBOOK_CALLBACK_CONTROLLER,
+  LOGOUT_CONTROLLER,
+};
