@@ -1,6 +1,6 @@
 import express from "express";
 
-// import OAuth from "@/services/OAuth";
+import OAuthRouter from "./OAuthRouter";
 import AuthRouter from "./AuthRouter";
 import UserRouter from "./UserRouter";
 import CategoryRouter from "./CategoryRouter";
@@ -14,6 +14,6 @@ routes.use(CategoryRouter);
 // routes.use(ProductRouter);
 routes.use("/auth", AuthRouter);
 
-// export const routesOauth = routes.use("/auth", OAuth);
+export const routesOauth = routes.use("/auth", OAuthRouter);
 
 export default routes;

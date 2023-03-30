@@ -57,6 +57,12 @@ const schema = new Schema<IUser>(
       type: String,
       default: RoleType.User,
     },
+    socials: [
+      {
+        providerName: { type: String },
+        providerID: { type: String },
+      },
+    ],
   },
   { timestamps: { currentTime: () => timezone() } },
 );

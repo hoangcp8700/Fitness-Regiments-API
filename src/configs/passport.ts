@@ -4,15 +4,13 @@ import GoogleOauth from "passport-google-oauth20";
 import FacebookOauth from "passport-facebook";
 
 import { CONFIG } from "@/configs";
-import { splitFullName } from "@/utils/functions";
 
 export type VerifyCallbackPassPort = (err?: Error | null, user?: any, info?: object) => void;
 
 export type ProfileSocialPassPort = {
   email: string;
   userName?: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   avatar: {
     url: string;
   };
@@ -27,6 +25,7 @@ const passportConnect = () => {
 
   // Middleware
   passport.serializeUser((user, cb) => {
+    console.log("serializeUser", user);
     cb(null, user);
   });
 
@@ -48,12 +47,12 @@ const passportConnect = () => {
       ) => {
         if (profile && profile.emails) {
           const newProfile: ProfileSocialPassPort = {
+            ...(profile.username && { username: profile.username }),
             email: profile.emails[0].value,
             avatar: {
               url: (profile?.photos && profile?.photos[0].value) as string,
             },
-            firstName: profile.name?.familyName as string,
-            lastName: profile.name?.givenName as string,
+            fullName: profile.displayName,
             providerName: profile.provider,
             providerID: profile.id,
             accessToken,
@@ -83,8 +82,7 @@ const passportConnect = () => {
             avatar: {
               url: (profile?.photos && profile.photos[0].value) as string,
             },
-            firstName: splitFullName(profile.displayName).firstName,
-            lastName: splitFullName(profile.displayName).lastName,
+            fullName: profile.displayName,
             providerName: profile.provider,
             providerID: profile.id,
             accessToken,
