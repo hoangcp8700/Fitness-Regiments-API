@@ -30,6 +30,13 @@ const MESSAGES = {
   CREATE_CATEGORY_SUCCESS: "Create category successfully",
   UPDATE_CATEGORY_SUCCESS: "Update category successfully",
   DELETE_CATEGORY_SUCCESS: "Delete category successfully",
+
+  // EXERCISE
+  EXERCISE_NOT_EXIST: "Exercise not found",
+  NAME_SLUG_EXERCISE_EXIST: "Name or slug of exercise exist",
+  CREATE_EXERCISE_SUCCESS: "Create exercise successfully",
+  UPDATE_EXERCISE_SUCCESS: "Update exercise successfully",
+  DELETE_EXERCISE_SUCCESS: "Delete exercise successfully",
 };
 
 export const VALIDATE_MESSAGE = {
@@ -39,9 +46,9 @@ export const VALIDATE_MESSAGE = {
   FILE_TOO_LARGE: "File exceeds maximum",
 
   // category
-  CATEGORY_NAME_COMBINE_SLUG: "Name is required when slug is present",
-  CATEGORY_SLUG_COMBINE_NAME: "Slug is required when name is present",
-  CATEGORY_SLUG_INVALID: "Invalid slug",
+  NAME_COMBINE_SLUG: "Name is required when slug is present",
+  SLUG_COMBINE_NAME: "Slug is required when name is present",
+  SLUG_INVALID: "Invalid slug",
 };
 
 export default MESSAGES;
