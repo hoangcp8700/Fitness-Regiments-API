@@ -14,11 +14,11 @@ router.get("/exercises/:id", controller.GET_DETAIL_CONTROLLER);
 
 router.post(
   "/exercises",
+  MULTER.array("files"),
   [
     authMiddleware.verifyToken,
-    MULTER.array("files"),
     validateRequestBody(exerciseValidate.exerciseSchema),
-    authMiddleware.isAdmin(true),
+    checkFileIsImage(false),
   ],
   controller.CREATE_CONTROLLER,
 );

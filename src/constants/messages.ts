@@ -37,6 +37,13 @@ const MESSAGES = {
   CREATE_EXERCISE_SUCCESS: "Create exercise successfully",
   UPDATE_EXERCISE_SUCCESS: "Update exercise successfully",
   DELETE_EXERCISE_SUCCESS: "Delete exercise successfully",
+
+  // ADS
+  ADS_NOT_EXIST: "Advertise not found",
+  NAME_SLUG_ADS_EXIST: "Name or slug of Advertise exist",
+  CREATE_ADS_SUCCESS: "Create Advertise successfully",
+  UPDATE_ADS_SUCCESS: "Update Advertise successfully",
+  DELETE_ADS_SUCCESS: "Delete Advertise successfully",
 };
 
 export const VALIDATE_MESSAGE = {

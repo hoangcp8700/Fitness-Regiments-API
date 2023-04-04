@@ -14,10 +14,11 @@ router.get("/categories/:id", controller.GET_DETAIL_CONTROLLER);
 
 router.post(
   "/categories",
+  MULTER.single("file"),
   [
     authMiddleware.verifyToken,
     validateRequestBody(categoryValidate.categorySchema),
-    authMiddleware.isAdmin(true),
+    checkFileIsImage(false),
   ],
   controller.CREATE_CONTROLLER,
 );
