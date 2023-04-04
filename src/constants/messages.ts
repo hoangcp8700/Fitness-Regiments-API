@@ -23,6 +23,7 @@ const MESSAGES = {
   ACCOUNT_EXIST: "Email or Username already exists",
   CODE_INVALID: "Code invalid",
   CODE_EXPIRED: "Code expired",
+  UPDATE_PROFILE_SUCCESS: "Update profile sucessfully",
 
   // CATEGORY
   CATEGORY_NOT_EXIST: "Category not found",

@@ -20,6 +20,8 @@ router.patch(
   controller.CHANGE_PASSWORD,
 );
 
+router.patch("/update-profile", [authMiddleware.verifyToken], controller.UPDATE_PROFILE_CONTROLLER);
+
 router.post(
   "/forgot-password",
   validateRequestBody(authValidate.forgotPasswordSchema),

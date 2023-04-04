@@ -164,10 +164,27 @@ const resetPassword = async (req: Request, res: Response) => {
   }
 };
 
+const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const { body, userID } = req;
+
+    const response = await User.findById(userID);
+    if (!response) {
+      return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.USER_NOT_EXIST, true)(req, res);
+    }
+
+    await response.updateOne(body);
+    return responseHandler(HttpCode.OK, MESSAGES.UPDATE_PROFILE_SUCCESS, undefined, true)(req, res);
+  } catch (error: any) {
+    return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
+  }
+};
+
 export default {
   login,
   register,
   resetPassword,
   forgotPassword,
   changePassword,
+  updateProfile,
 };

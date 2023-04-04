@@ -33,6 +33,16 @@ const REGISTER_CONTROLLER = async (req: Request, res: Response) => {
     errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
   }
 };
+
+const UPDATE_PROFILE_CONTROLLER = async (req: Request, res: Response) => {
+  try {
+    const response = await authService.updateProfile(req, res);
+    responseHandler(response.httpCode, response.message, response.data)(req, res);
+  } catch (error: any) {
+    errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message)(req, res);
+  }
+};
+
 // chua test
 const FORGOT_PASSWORD_CONTROLLER = async (req: Request, res: Response) => {
   try {
@@ -68,4 +78,5 @@ export default {
   RESET_PASSWORD_CONTROLLER,
   CHANGE_PASSWORD,
   FORGOT_PASSWORD_CONTROLLER,
+  UPDATE_PROFILE_CONTROLLER,
 };
