@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get(
   "/users",
-  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  [authMiddleware.verifyToken, authMiddleware.isAdmin(false)],
   controller.GET_LIST_CONTROLLER,
 );
 router.get("/users/:id", controller.GET_DETAIL_CONTROLLER);
