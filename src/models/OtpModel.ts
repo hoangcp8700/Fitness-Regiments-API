@@ -1,11 +1,11 @@
 import { Model, Schema, model, Document } from "mongoose";
 
 import timezone, { isExpiredTime } from "@/utils/formatTime";
-import { CodeType } from "@interfaces/codeType";
+import { OtpType } from "@interfaces/otpType";
 import { createCode } from "@utils/jwt";
 
 // declare methods
-export interface CodeDocument extends CodeType, Document {
+export interface OtpDocument extends OtpType, Document {
   isExpired: () => boolean;
 }
 
@@ -14,11 +14,11 @@ interface CreateOrUpdateCodeProps {
   expired?: Date;
 }
 // declare  statics
-export interface CodeModel extends Model<CodeDocument> {
+export interface CodeModel extends Model<OtpDocument> {
   createOrUpdateCode: (userID: string) => Promise<CreateOrUpdateCodeProps>;
 }
 
-const schema = new Schema<CodeType>(
+const schema = new Schema<OtpType>(
   {
     createdBy: {
       type: Schema.Types.ObjectId,
@@ -53,6 +53,6 @@ schema.methods.isExpired = function (): boolean {
   return isExpiredTime(this.expired);
 };
 
-const Code = model<CodeDocument, CodeModel>("Code", schema);
+const Otp = model<OtpDocument, CodeModel>("Otp", schema);
 
-export default Code;
+export default Otp;

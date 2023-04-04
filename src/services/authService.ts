@@ -10,9 +10,9 @@ import { createToken } from "@utils/jwt";
 import ResetPasswordView from "@views/resetPassword";
 import { CONFIG } from "@configs";
 import nodeMailerConfig from "@configs/nodeMailer";
-import Code from "@models/CodeModel";
+import Otp from "@models/OtpModel";
 
-import codeService from "./codeService";
+import otpService from "./otpService";
 
 const login = async (req: Request, res: Response) => {
   try {
@@ -108,7 +108,7 @@ const forgotPassword = async (req: Request, res: Response) => {
       return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.USER_NOT_EXIST, true)(req, res);
     }
 
-    const { otp } = await Code.createOrUpdateCode(user.id);
+    const { otp } = await Otp.createOrUpdateCode(user.id);
     const token = createToken({ id: user._id, email: user.email, password: user.password }, "30m"); // create token with 15 minute
 
     const mailOptions = {
@@ -147,7 +147,7 @@ const resetPassword = async (req: Request, res: Response) => {
     }
 
     // NOTE: handle OTP ---------------------------------
-    const response = await codeService.verify(req, res);
+    const response = await otpService.verify(req, res);
     if (!response.isSuccess) {
       return responseHandler(response.httpCode, response.message, response.data, true)(req, res);
     }
@@ -156,7 +156,7 @@ const resetPassword = async (req: Request, res: Response) => {
     await user.updateOne({
       password: user.hashPassword(password),
     });
-    await codeService.deleteCode(req, res);
+    await otpService.deleteCode(req, res);
 
     return responseHandler(HttpCode.OK, MESSAGES.RESET_PASSWORD_SUCCESS, undefined, true)(req, res);
   } catch (error: any) {

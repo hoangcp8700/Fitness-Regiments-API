@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-export type CodeType = {
+export type OtpType = {
   createdBy: Schema.Types.ObjectId;
   otp: string;
   expired: Date;

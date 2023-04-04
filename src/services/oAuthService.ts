@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 
 import { ProfileSocialPassPort } from "@/configs/passport";
@@ -85,7 +84,7 @@ const facebook = async (req: Request, res: Response) => {
     return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message, true)(req, res);
   }
 };
-
+// WIP: chua check
 const logout = async (req: Request, res: Response) => {
   try {
     // console.log("req.session logout", req.session);
