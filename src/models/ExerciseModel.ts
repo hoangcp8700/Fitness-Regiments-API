@@ -31,7 +31,6 @@ const schema: Schema = new Schema<ExerciseType>(
       trim: true,
     },
     videoUrl: String,
-    duration: Number,
     content: String,
     images: [
       {

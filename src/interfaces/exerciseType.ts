@@ -8,7 +8,6 @@ export type ExerciseType = {
   name: string;
   slug: string;
   videoUrl: string;
-  duration: number;
   content: string;
   images?: ThumbnailType[];
 } & BaseActionType;
