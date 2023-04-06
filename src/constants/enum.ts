@@ -8,6 +8,17 @@ export enum RoleCategoryType {
   User = "user",
 }
 
+export enum DateType {
+  Week = "week",
+  Month = "month",
+}
+
+export enum WorkoutItemType {
+  Exercise = "exercise",
+  Post = "post",
+  Custom = "custom",
+}
+
 export enum HttpCode {
   OK = 200,
   NO_CONTENT = 204,
