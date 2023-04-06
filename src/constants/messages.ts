@@ -45,6 +45,13 @@ const MESSAGES = {
   CREATE_ADS_SUCCESS: "Create Advertise successfully",
   UPDATE_ADS_SUCCESS: "Update Advertise successfully",
   DELETE_ADS_SUCCESS: "Delete Advertise successfully",
+
+  // WORKOUT REGIMENT
+  WORKOUT_REGIMENT_NOT_EXIST: "Workout regiment not found",
+  NAME_SLUG_WORKOUT_REGIMENT_EXIST: "Name or slug of workout regiment exist",
+  CREATE_WORKOUT_REGIMENT_SUCCESS: "Create workout regiment successfully",
+  UPDATE_WORKOUT_REGIMENT_SUCCESS: "Update workout regiment successfully",
+  DELETE_WORKOUT_REGIMENT_SUCCESS: "Delete workout regiment successfully",
 };
 
 export const VALIDATE_MESSAGE = {

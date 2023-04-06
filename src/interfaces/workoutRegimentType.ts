@@ -7,6 +7,7 @@ import { BaseActionType } from "./base";
 export type WorkoutRegimentType = {
   createdBy: Schema.Types.ObjectId;
   title: string;
+  slug: string;
   type: DateType;
 } & BaseActionType;
 

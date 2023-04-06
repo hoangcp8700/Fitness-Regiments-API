@@ -6,12 +6,14 @@ import UserRouter from "./UserRouter";
 import CategoryRouter from "./CategoryRouter";
 import ExerciseRouter from "./ExerciseRouter";
 import AdsRouter from "./AdsRouter";
+import WorkoutRegimentRouter from "./WorkoutRegimentRouter";
 
 const routes = express();
 routes.use(UserRouter);
 routes.use(CategoryRouter);
 routes.use(ExerciseRouter);
 routes.use(AdsRouter);
+routes.use(WorkoutRegimentRouter);
 
 // routes.use(SubCategoryRouter);
 // routes.use(ShopRouter);
