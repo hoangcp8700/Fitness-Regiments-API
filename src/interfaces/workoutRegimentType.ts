@@ -16,7 +16,7 @@ export type WorkoutRegimentItemType = {
   itemID: Schema.Types.ObjectId; // combine with type below
   type: WorkoutItemType;
   content?: string;
-  positionIndex?: number;
+  positionIndex: number;
   title: string;
   color?: string; // hex color
 };
