@@ -13,7 +13,7 @@ export type WorkoutRegimentType = {
 
 export type WorkoutRegimentItemType = {
   workoutID: Schema.Types.ObjectId;
-  itemID: Schema.Types.ObjectId; // combine with type below
+  itemID?: Schema.Types.ObjectId; // combine with type below
   type: WorkoutItemType;
   content?: string;
   positionIndex: number;

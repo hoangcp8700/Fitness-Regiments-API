@@ -1,6 +1,6 @@
 import express from "express";
 
-import controller from "@/controllers/WorkoutRegimentController";
+import controller from "@/controllers/WorkoutRegimentItemController";
 import authMiddleware from "@middleware/auth";
 import validateRequestBody from "@middleware/validate";
 import workoutRegimentValidate from "@validators/workoutRegimentValidate";
@@ -13,13 +13,13 @@ router.get("/workout-regiments/:id/items/:itemID", controller.GET_DETAIL_CONTROL
 // TODO
 router.post(
   "/workout-regiments/:id",
-  [authMiddleware.verifyToken, validateRequestBody(workoutRegimentValidate.workoutSchema)],
+  [authMiddleware.verifyToken, validateRequestBody(workoutRegimentValidate.workoutItemSchema)],
   controller.CREATE_CONTROLLER,
 );
 
 router.patch(
   "/workout-regiments/:id/items/:itemID",
-  [authMiddleware.verifyToken, validateRequestBody(workoutRegimentValidate.workoutSchema)],
+  [authMiddleware.verifyToken, validateRequestBody(workoutRegimentValidate.workoutItemSchema)],
   controller.UPDATE_CONTROLLER,
 );
 router.delete(

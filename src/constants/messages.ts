@@ -64,6 +64,8 @@ export const VALIDATE_MESSAGE = {
   NAME_COMBINE_SLUG: "Name is required when slug is present",
   SLUG_COMBINE_NAME: "Slug is required when name is present",
   SLUG_INVALID: "Invalid slug",
+
+  // WORKOUT REGIMENT ITEMS
 };
 
 export default MESSAGES;
