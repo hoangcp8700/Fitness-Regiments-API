@@ -52,6 +52,7 @@ const MESSAGES = {
   CREATE_WORKOUT_REGIMENT_SUCCESS: "Create workout regiment successfully",
   UPDATE_WORKOUT_REGIMENT_SUCCESS: "Update workout regiment successfully",
   DELETE_WORKOUT_REGIMENT_SUCCESS: "Delete workout regiment successfully",
+  POSITION_INDEX_EXIST: "Position index exists",
 };
 
 export const VALIDATE_MESSAGE = {
@@ -64,6 +65,8 @@ export const VALIDATE_MESSAGE = {
   NAME_COMBINE_SLUG: "Name is required when slug is present",
   SLUG_COMBINE_NAME: "Slug is required when name is present",
   SLUG_INVALID: "Invalid slug",
+
+  // WORKOUT REGIMENT ITEMS
 };
 
 export default MESSAGES;

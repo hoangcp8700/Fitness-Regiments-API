@@ -14,9 +14,9 @@ export enum DateType {
 }
 
 export enum WorkoutItemType {
-  Exercise = "exercise",
-  Post = "post",
-  Custom = "custom",
+  Exercise = "Exercise",
+  Post = "Post",
+  Custom = "Custom",
 }
 
 export enum HttpCode {
