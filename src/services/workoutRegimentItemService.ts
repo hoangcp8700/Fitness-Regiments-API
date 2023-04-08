@@ -9,7 +9,6 @@ import WorkoutRegiment from "@models/WorkoutRegimentModel";
 
 const checkExist = async (req: Request, res: Response) => {
   try {
-    const { body } = req;
     const { id, itemID } = req.params;
 
     const responseParent = await WorkoutRegiment.findById(id);
@@ -19,6 +18,7 @@ const checkExist = async (req: Request, res: Response) => {
 
     let response;
     if (itemID) {
+      // FOR UPDATE
       response = await WorkoutRegimentItem.findById(itemID);
       if (!response) {
         return errorHandler(
@@ -26,16 +26,6 @@ const checkExist = async (req: Request, res: Response) => {
           MESSAGES.WORKOUT_REGIMENT_NOT_EXIST,
           true,
         )(req, res);
-      }
-      // FOR UPDATE
-      if (body && response.positionIndex === Number(body.positionIndex)) {
-        return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.POSITION_INDEX_EXIST, true)(req, res);
-      }
-    } else {
-      // for create
-      const existRes = await WorkoutRegimentItem.findOne({ positionIndex: body.positionIndex });
-      if (existRes) {
-        return errorHandler(HttpCode.BAD_REQUEST, MESSAGES.POSITION_INDEX_EXIST, true)(req, res);
       }
     }
 
@@ -49,7 +39,18 @@ const getList = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
+    const responseExist = await checkExist(req, res);
+    if (!responseExist.isSuccess) {
+      return responseHandler(
+        responseExist.httpCode,
+        responseExist.message,
+        responseExist.data,
+        true,
+      )(req, res);
+    }
+
     const response = await WorkoutRegimentItem.find({ workoutID: id });
+
     return responseHandler(HttpCode.OK, undefined, response, true)(req, res);
   } catch (error: any) {
     return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message, true)(req, res);
@@ -73,9 +74,25 @@ const create = async (req: Request, res: Response) => {
   try {
     const { params, body } = req;
 
-    const response = await checkExist(req, res);
-    if (!response.isSuccess) {
-      return responseHandler(response.httpCode, response.message, response.data, true)(req, res);
+    const responseExist = await checkExist(req, res);
+    if (!responseExist.isSuccess) {
+      return responseHandler(
+        responseExist.httpCode,
+        responseExist.message,
+        responseExist.data,
+        true,
+      )(req, res);
+    }
+
+    if (Array.isArray(body)) {
+      const newRecords = body.map((record) => ({ ...record, workoutID: params.id }));
+      const response = await WorkoutRegimentItem.create(newRecords);
+      return responseHandler(
+        HttpCode.OK,
+        MESSAGES.CREATE_WORKOUT_REGIMENT_SUCCESS,
+        response,
+        true,
+      )(req, res);
     }
 
     const newCategory = new WorkoutRegimentItem({

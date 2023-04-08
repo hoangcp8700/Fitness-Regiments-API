@@ -42,7 +42,9 @@ const schema: Schema = new Schema<WorkoutRegimentItemType>(
       enum: Object.values(WorkoutItemType),
       required: true,
     },
-    color: String,
+    color: { type: String, default: null },
+    startTime: { type: Date, default: null },
+    endTime: { type: Date, default: null },
   },
   {
     timestamps: { currentTime: () => timezone() },

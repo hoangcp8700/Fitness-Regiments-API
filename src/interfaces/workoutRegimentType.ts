@@ -19,4 +19,6 @@ export type WorkoutRegimentItemType = {
   positionIndex: number;
   title: string;
   color?: string; // hex color
+  startTime?: Date;
+  endTime?: Date;
 };

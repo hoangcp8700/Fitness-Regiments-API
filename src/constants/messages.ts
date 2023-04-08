@@ -67,6 +67,7 @@ export const VALIDATE_MESSAGE = {
   SLUG_INVALID: "Invalid slug",
 
   // WORKOUT REGIMENT ITEMS
+  DATE_RANGE_END: "End time must be after start time",
 };
 
 export default MESSAGES;
