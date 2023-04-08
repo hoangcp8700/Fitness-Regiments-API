@@ -6,7 +6,7 @@ import { HttpCode } from "@constants/enum";
 type ValidateFieldType = Record<string, any> | Record<string, any>[];
 
 const validateRequestBody =
-  <T extends ValidateFieldType>(schema: yup.ObjectSchema<T> | yup.ArraySchema<any, any>) =>
+  <T extends ValidateFieldType>(schema: yup.ObjectSchema<T>) =>
   async (req: Request, res: Response, next: NextFunction) => {
     const { body } = req;
     try {
@@ -26,6 +26,28 @@ const validateRequestBody =
         // Validate the single record
         await schema.validate(body, { abortEarly: false });
       }
+      next();
+    } catch (error: any) {
+      const validationErrors = error.inner.reduce(
+        (acc: Record<string, string[]>, err: yup.ValidationError) => {
+          if (err.path) {
+            acc[err.path] = err.errors;
+          }
+          return acc;
+        },
+        {},
+      );
+
+      res.status(HttpCode.UNPROCESSABLE_CONTENT).json({ errors: validationErrors });
+    }
+  };
+
+export const validateRequestArrayBody =
+  (schema: yup.ArraySchema<(string | undefined)[] | undefined, yup.AnyObject, "", "">) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { body } = req;
+    try {
+      await schema.validate(body, { abortEarly: false });
       next();
     } catch (error: any) {
       const validationErrors = error.inner.reduce(

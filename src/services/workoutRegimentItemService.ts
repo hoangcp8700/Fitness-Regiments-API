@@ -70,7 +70,7 @@ const getDetail = async (req: Request, res: Response) => {
   }
 };
 
-const create = async (req: Request, res: Response) => {
+const createOneOrMany = async (req: Request, res: Response) => {
   try {
     const { params, body } = req;
 
@@ -134,11 +134,23 @@ const update = async (req: Request, res: Response) => {
     return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
   }
 };
-const deleteOne = async (req: Request, res: Response) => {
+const deleteOneOrMany = async (req: Request, res: Response) => {
   try {
+    const { body } = req;
+
     const { isSuccess, data: response, httpCode, message } = await checkExist(req, res);
     if (!isSuccess) {
       return responseHandler(httpCode, message, response, true)(req, res);
+    }
+
+    if (Array.isArray(body)) {
+      await WorkoutRegimentItem.deleteMany({ _id: { $in: body } });
+      return responseHandler(
+        HttpCode.OK,
+        MESSAGES.DELETE_WORKOUT_REGIMENT_SUCCESS,
+        response,
+        true,
+      )(req, res);
     }
 
     await response.deleteOne();
@@ -157,7 +169,7 @@ const deleteOne = async (req: Request, res: Response) => {
 export default {
   getList,
   getDetail,
-  create,
+  createOneOrMany,
   update,
-  deleteOne,
+  deleteOneOrMany,
 };

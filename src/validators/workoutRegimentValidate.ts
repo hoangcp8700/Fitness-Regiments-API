@@ -53,7 +53,12 @@ const workoutItemSchema = yup.object().shape({
   }),
 });
 
+const idSchema = yup.string().matches(/^[0-9a-fA-F]{24}$/, "Invalid id");
+
+const deleteSchema = yup.array().of(idSchema).min(1);
+
 export default {
   workoutSchema,
   workoutItemSchema,
+  deleteSchema,
 };
