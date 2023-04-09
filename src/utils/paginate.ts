@@ -1,6 +1,6 @@
 import { PaginateOptions } from "mongoose";
 
-interface PaginateOptionsDefaultProps extends PaginateOptions {
+export interface PaginateOptionsDefaultProps extends PaginateOptions {
   page: any;
   limit: any;
 }
