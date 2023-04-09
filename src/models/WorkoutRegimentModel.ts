@@ -6,6 +6,8 @@ import { IPaginateModel } from "@interfaces/paginate";
 import { WorkoutRegimentType } from "@/interfaces/workoutRegimentType";
 import { DateType } from "@constants/enum";
 
+import WorkoutRegimentItem from "./WorkoutRegimentItemModel";
+
 // declare methods
 export interface WorkoutRegimentDocument extends WorkoutRegimentType, Document {}
 
@@ -45,6 +47,14 @@ const schema: Schema = new Schema<WorkoutRegimentType>(
     timestamps: { currentTime: () => timezone() },
   },
 );
+
+schema.pre("deleteOne", { document: true, query: false }, function (this: any, next) {
+  WorkoutRegimentItem.deleteMany({
+    workoutID: this._id,
+  }).exec();
+
+  next();
+});
 
 // schema.plugin(aggregatePaginate);
 schema.plugin(mongoosePaginate);

@@ -158,8 +158,6 @@ const deleteOne = async (req: Request, res: Response) => {
     }
 
     await response.deleteOne();
-    // NOTE: update later
-    // response.remove();
 
     return responseHandler(
       HttpCode.OK,
