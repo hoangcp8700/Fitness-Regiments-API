@@ -7,6 +7,28 @@ import { HttpCode } from "@constants/enum";
 import responseHandler from "@exceptions/ResponseHandler";
 import MESSAGES from "@constants/messages";
 
+const aggregatePipeline = [
+  {
+    $lookup: {
+      from: "workoutregimentitems",
+      localField: "_id",
+      foreignField: "workoutID",
+      pipeline: [
+        {
+          $project: {
+            title: 1,
+            positionIndex: 1,
+            color: 1,
+            startTime: 1,
+            endTime: 1,
+          },
+        },
+      ],
+      as: "items",
+    },
+  },
+];
+
 const getList = async (req: Request, res: Response) => {
   try {
     const { page = 1, limit = 20 } = req.query;
@@ -34,7 +56,9 @@ const getDetail = async (req: Request, res: Response) => {
     if (!response) {
       return errorHandler(HttpCode.NOT_FOUND, MESSAGES.WORKOUT_REGIMENT_NOT_EXIST, true)(req, res);
     }
-    return responseHandler(HttpCode.OK, undefined, response, true)(req, res);
+
+    const aggregate = await WorkoutRegiment.aggregate(aggregatePipeline);
+    return responseHandler(HttpCode.OK, undefined, aggregate, true)(req, res);
   } catch (error: any) {
     return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message, true)(req, res);
   }
@@ -134,8 +158,6 @@ const deleteOne = async (req: Request, res: Response) => {
     }
 
     await response.deleteOne();
-    // NOTE: update later
-    // response.remove();
 
     return responseHandler(
       HttpCode.OK,

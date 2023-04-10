@@ -6,13 +6,21 @@ import { IPaginateModel } from "@interfaces/paginate";
 import { WorkoutRegimentType } from "@/interfaces/workoutRegimentType";
 import { DateType } from "@constants/enum";
 
+import WorkoutRegimentItem from "./WorkoutRegimentItemModel";
+
 // declare methods
 export interface WorkoutRegimentDocument extends WorkoutRegimentType, Document {}
 
 // declare  statics
 export interface WorkoutRegimentModel
   extends Model<WorkoutRegimentDocument>,
-    IPaginateModel<WorkoutRegimentDocument> {}
+    IPaginateModel<WorkoutRegimentDocument> {
+  // aggregatePaginate(
+  //   query?: Aggregate<WorkoutRegimentDocument[]>,
+  //   options?: PaginateOptions,
+  //   callback?: (err: any, result: AggregatePaginateResult<WorkoutRegimentDocument>) => void,
+  // ): Promise<AggregatePaginateResult<WorkoutRegimentDocument>>;
+}
 
 const schema: Schema = new Schema<WorkoutRegimentType>(
   {
@@ -40,15 +48,15 @@ const schema: Schema = new Schema<WorkoutRegimentType>(
   },
 );
 
-// schema.post("remove", async (result, next) => {
-//   await SubCategory.deleteMany({
-//     categoryID: result._id,
-//   }).exec();
-//   await Product.deleteMany({ categoryID: result._id }).exec();
+schema.pre("deleteOne", { document: true, query: false }, function (this: any, next) {
+  WorkoutRegimentItem.deleteMany({
+    workoutID: this._id,
+  }).exec();
 
-//   next();
-// });
+  next();
+});
 
+// schema.plugin(aggregatePaginate);
 schema.plugin(mongoosePaginate);
 
 const WorkoutRegiment: WorkoutRegimentModel = model<WorkoutRegimentDocument, WorkoutRegimentModel>(
@@ -57,3 +65,8 @@ const WorkoutRegiment: WorkoutRegimentModel = model<WorkoutRegimentDocument, Wor
 );
 
 export default WorkoutRegiment;
+
+// EXAMPLE
+//  const options = paginateOptions({ page, limit });
+// const aggregate = WorkoutRegiment.aggregate(aggregatePipeline);
+// const response = await WorkoutRegiment.aggregatePaginate(aggregate, options);

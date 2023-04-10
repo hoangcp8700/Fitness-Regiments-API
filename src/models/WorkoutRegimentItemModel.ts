@@ -1,5 +1,4 @@
 import { Model, Schema, model, Document } from "mongoose";
-import mongoosePaginate from "mongoose-paginate-v2";
 
 import timezone from "@/utils/formatTime";
 import { IPaginateModel } from "@interfaces/paginate";
@@ -30,15 +29,15 @@ const schema: Schema = new Schema<WorkoutRegimentItemType>(
     },
     itemID: {
       type: Schema.Types.ObjectId,
-      validate: [itemIDRequired, "itemID is required if type is not Custom"],
       // refPath: "type", // solution 1
+      // solution 2
       refPath() {
         if (this.type === WorkoutItemType.Custom) {
           return "null";
         }
 
         return this.type;
-      }, // solution 2
+      },
     },
     positionIndex: Number,
     title: String,
@@ -52,21 +51,22 @@ const schema: Schema = new Schema<WorkoutRegimentItemType>(
       enum: Object.values(WorkoutItemType),
       required: true,
     },
-    color: String,
+    color: { type: String, default: null },
+    startTime: { type: Date, default: null },
+    endTime: { type: Date, default: null },
   },
   {
     timestamps: { currentTime: () => timezone() },
   },
 );
 
-schema.pre<WorkoutRegimentItemDocument>("save", function (next) {
-  if (this.type !== WorkoutItemType.Custom) {
-    this.content = ""; // clear the customContent field if type is not Custom
-  }
-  next();
+// format data
+schema.set("toJSON", {
+  transform(_doc, ret) {
+    delete ret.workoutID;
+    return ret;
+  },
 });
-
-schema.plugin(mongoosePaginate);
 
 const WorkoutRegimentItem: WorkoutRegimentItemModel = model<
   WorkoutRegimentItemDocument,

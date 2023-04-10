@@ -2,7 +2,7 @@ import express from "express";
 
 import controller from "@/controllers/WorkoutRegimentItemController";
 import authMiddleware from "@middleware/auth";
-import validateRequestBody from "@middleware/validate";
+import validateRequestBody, { validateRequestArrayBody } from "@middleware/validate";
 import workoutRegimentValidate from "@validators/workoutRegimentValidate";
 
 const router = express.Router();
@@ -23,8 +23,8 @@ router.patch(
   controller.UPDATE_CONTROLLER,
 );
 router.delete(
-  "/workout-regiments/:id/items/:itemID",
-  [authMiddleware.verifyToken],
+  "/workout-regiments/:id/items",
+  [authMiddleware.verifyToken, validateRequestArrayBody(workoutRegimentValidate.deleteSchema)],
   controller.DELETE_CONTROLLER,
 );
 

@@ -1,26 +1,30 @@
 import { addMinutes, format, formatDistanceToNow, getDay } from "date-fns";
 
 // ----------------------------------------------------------------------
+export default function timezone(value = "") {
+  const date = new Date(value);
+  return date.setHours(date.getHours() + 7);
+}
 
 export function fDate(date: string) {
-  return format(new Date(date), "dd MMMM yyyy");
+  return format(timezone(date), "dd MMMM yyyy");
 }
 
 export function fDateOriginal(date: string) {
-  return format(new Date(date), "dd/MM/yyyy");
+  return format(timezone(date), "dd/MM/yyyy");
 }
 
 export function fDateTime(date: string) {
-  return format(new Date(date), "dd/MM HH:mm");
+  return format(timezone(date), "dd/MM HH:mm");
 }
 
 export function fDateTimeSuffix(date: string) {
-  return format(new Date(date), "dd/MM/yyyy hh:mm p");
+  return format(timezone(date), "dd/MM/yyyy hh:mm p");
 }
 
 export function fToNow(date: string) {
   const oneDay = 86400000;
-  if (new Date().getTime() - Math.floor(new Date(date).getTime()) > oneDay) {
+  if (timezone() - Math.floor(timezone(date)) > oneDay) {
     return fDateTime(date);
   }
   return formatDistanceToNow(new Date(date), {
@@ -29,7 +33,7 @@ export function fToNow(date: string) {
 }
 
 export function fGetDay(date: string) {
-  const day = getDay(new Date(date));
+  const day = getDay(timezone(date));
   if (day === 0) {
     return "Chủ Nhật";
   }
@@ -55,12 +59,7 @@ export function fGetDay(date: string) {
 }
 
 export function fTime(date: string) {
-  return format(new Date(date), "HH:mm");
-}
-
-export default function timezone() {
-  const date = new Date();
-  return date.setHours(date.getHours() + 7);
+  return format(timezone(date), "HH:mm");
 }
 
 export function fAddMinute(minute: number) {

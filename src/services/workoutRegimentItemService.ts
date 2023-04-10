@@ -1,53 +1,25 @@
 import { Request, Response } from "express";
 
 import WorkoutRegimentItem from "@models/WorkoutRegimentItemModel";
-import { paginateOptions } from "@utils/paginate";
 import errorHandler from "@exceptions/ErrorHandler";
 import { HttpCode } from "@constants/enum";
 import responseHandler from "@exceptions/ResponseHandler";
 import MESSAGES from "@constants/messages";
-
-const getList = async (req: Request, res: Response) => {
-  try {
-    const { page = 1, limit = 20 } = req.query;
-
-    const options = paginateOptions({ page, limit });
-
-    const response = await WorkoutRegimentItem.paginate({}, options, (err, result) => {
-      if (err) {
-        return errorHandler(HttpCode.BAD_REQUEST, err.message, true)(req, res);
-      }
-      return result;
-    });
-
-    return responseHandler(HttpCode.OK, undefined, response, true)(req, res);
-  } catch (error: any) {
-    return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message, true)(req, res);
-  }
-};
-
-const getDetail = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-
-    const response = await WorkoutRegimentItem.findById(id).exec();
-    if (!response) {
-      return errorHandler(HttpCode.NOT_FOUND, MESSAGES.WORKOUT_REGIMENT_NOT_EXIST, true)(req, res);
-    }
-    return responseHandler(HttpCode.OK, undefined, response, true)(req, res);
-  } catch (error: any) {
-    return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message, true)(req, res);
-  }
-};
+import WorkoutRegiment from "@models/WorkoutRegimentModel";
 
 const checkExist = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id, itemID } = req.params;
 
-    // FOR UPDATE
+    const responseParent = await WorkoutRegiment.findById(id);
+    if (!responseParent) {
+      return errorHandler(HttpCode.NOT_FOUND, MESSAGES.WORKOUT_REGIMENT_NOT_EXIST, true)(req, res);
+    }
+
     let response;
-    if (id) {
-      response = await WorkoutRegimentItem.findById(id);
+    if (itemID) {
+      // FOR UPDATE
+      response = await WorkoutRegimentItem.findById(itemID);
       if (!response) {
         return errorHandler(
           HttpCode.NOT_FOUND,
@@ -63,18 +35,69 @@ const checkExist = async (req: Request, res: Response) => {
   }
 };
 
-const create = async (req: Request, res: Response) => {
+const getList = async (req: Request, res: Response) => {
   try {
-    const { body, userID } = req;
+    const { id } = req.params;
 
-    const response = await checkExist(req, res);
-    if (!response.isSuccess) {
-      return responseHandler(response.httpCode, response.message, response.data, true)(req, res);
+    const responseExist = await checkExist(req, res);
+    if (!responseExist.isSuccess) {
+      return responseHandler(
+        responseExist.httpCode,
+        responseExist.message,
+        responseExist.data,
+        true,
+      )(req, res);
+    }
+
+    const response = await WorkoutRegimentItem.find({ workoutID: id });
+
+    return responseHandler(HttpCode.OK, undefined, response, true)(req, res);
+  } catch (error: any) {
+    return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message, true)(req, res);
+  }
+};
+
+const getDetail = async (req: Request, res: Response) => {
+  try {
+    const { isSuccess, data: response, httpCode, message } = await checkExist(req, res);
+    if (!isSuccess) {
+      return responseHandler(httpCode, message, response, true)(req, res);
+    }
+
+    return responseHandler(HttpCode.OK, undefined, response, true)(req, res);
+  } catch (error: any) {
+    return errorHandler(HttpCode.INTERNAL_SERVER_ERROR, error.message, true)(req, res);
+  }
+};
+
+const createOneOrMany = async (req: Request, res: Response) => {
+  try {
+    const { params, body } = req;
+
+    const responseExist = await checkExist(req, res);
+    if (!responseExist.isSuccess) {
+      return responseHandler(
+        responseExist.httpCode,
+        responseExist.message,
+        responseExist.data,
+        true,
+      )(req, res);
+    }
+
+    if (Array.isArray(body)) {
+      const newRecords = body.map((record) => ({ ...record, workoutID: params.id }));
+      const response = await WorkoutRegimentItem.create(newRecords);
+      return responseHandler(
+        HttpCode.OK,
+        MESSAGES.CREATE_WORKOUT_REGIMENT_SUCCESS,
+        response,
+        true,
+      )(req, res);
     }
 
     const newCategory = new WorkoutRegimentItem({
       ...body,
-      createdBy: userID,
+      workoutID: params.id,
     });
 
     await newCategory.save();
@@ -100,6 +123,7 @@ const update = async (req: Request, res: Response) => {
     }
 
     await response.updateOne(body);
+
     return responseHandler(
       HttpCode.OK,
       MESSAGES.UPDATE_WORKOUT_REGIMENT_SUCCESS,
@@ -110,13 +134,23 @@ const update = async (req: Request, res: Response) => {
     return errorHandler(HttpCode.BAD_REQUEST, error.message, true)(req, res);
   }
 };
-const deleteOne = async (req: Request, res: Response) => {
+const deleteOneOrMany = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { body } = req;
 
-    const response = await WorkoutRegimentItem.findById(id);
-    if (!response) {
-      return errorHandler(HttpCode.NOT_FOUND, MESSAGES.WORKOUT_REGIMENT_NOT_EXIST, true)(req, res);
+    const { isSuccess, data: response, httpCode, message } = await checkExist(req, res);
+    if (!isSuccess) {
+      return responseHandler(httpCode, message, response, true)(req, res);
+    }
+
+    if (Array.isArray(body)) {
+      await WorkoutRegimentItem.deleteMany({ _id: { $in: body } });
+      return responseHandler(
+        HttpCode.OK,
+        MESSAGES.DELETE_WORKOUT_REGIMENT_SUCCESS,
+        response,
+        true,
+      )(req, res);
     }
 
     await response.deleteOne();
@@ -135,7 +169,7 @@ const deleteOne = async (req: Request, res: Response) => {
 export default {
   getList,
   getDetail,
-  create,
+  createOneOrMany,
   update,
-  deleteOne,
+  deleteOneOrMany,
 };
