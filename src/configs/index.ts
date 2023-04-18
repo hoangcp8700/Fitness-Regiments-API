@@ -102,6 +102,7 @@ const PASSPORT_OPTIONS = {
 
 // Array of allowed files
 const imgExtensions = ["png", "jpeg", "jpg"];
+const videoExtension = ["mp4", "mov", "webm"];
 
 export const CONFIG = {
   port: PORT,
@@ -121,4 +122,5 @@ export const CONFIG = {
   passport: PASSPORT_OPTIONS,
   secretKey: SECRET_KEY,
   imgExtensions,
+  videoExtension,
 };

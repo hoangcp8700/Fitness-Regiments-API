@@ -35,3 +35,34 @@ export const checkFileIsImage =
     }
     return next();
   };
+
+export const checkFileIsVideo =
+  (isRequired = true) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const video = req.file;
+    if (!isRequired && !video) {
+      return next();
+    }
+    if (!video) {
+      return errorHandler(HttpCode.BAD_REQUEST, VALIDATE_MESSAGE.FILE_REQUIRED)(req, res);
+    }
+
+    // const allowSize = 2;
+
+    const fileExtension = video.originalname.slice(
+      // eslint-disable-next-line no-bitwise
+      ((video.originalname.lastIndexOf(".") - 1) >>> 0) + 2,
+    );
+
+    if (!CONFIG.videoExtension.includes(fileExtension)) {
+      return errorHandler(
+        HttpCode.BAD_REQUEST,
+        VALIDATE_MESSAGE.INVALID_FILE(CONFIG.videoExtension.toString()),
+      )(req, res);
+    }
+
+    // if (video.size / (1024 * 1024) > allowSize) {
+    //   return errorHandler(HttpCode.BAD_REQUEST, VALIDATE_MESSAGE.FILE_TOO_LARGE)(req, res);
+    // }
+    return next();
+  };
